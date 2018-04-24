@@ -15,8 +15,7 @@ public class ThreadedServer implements Runnable{
 	
 	@Override
 	public void run() 
-	{		
-		int portNumber = Integer.parseInt("");
+	{	
 		final int THREADS = 3;		
 		
 		try (ServerSocket serverSocket = new ServerSocket(portNumber);) 
@@ -29,7 +28,7 @@ public class ThreadedServer implements Runnable{
 		} 
 		catch (IOException e) {
 			System.out.println(
-					"Exception caught when trying to listen on port " + "30122"  + " or listening for a connection");
+					"Exception caught when trying to listen on port " + portNumber  + " or listening for a connection");
 			System.out.println(e.getMessage());
 		}
 		
