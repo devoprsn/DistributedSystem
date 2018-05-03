@@ -1,4 +1,3 @@
-package DistributedSystemProject;
 
 public class SlaveThreadedServer implements Runnable
 {
