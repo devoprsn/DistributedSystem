@@ -6,12 +6,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-public class ServerThread implements Runnable {
+public class ClientServerThread implements Runnable {
 	
 	private ServerSocket serverSocket = null;
 	int id; 
 	LinkedList<Job> jobs;
-	public ServerThread(ServerSocket s, int id, LinkedList<Job> jobs)
+	public ClientServerThread(ServerSocket s, int id, LinkedList<Job> jobs)
 	{
 		serverSocket = s;
 		this.id = id;
@@ -30,7 +30,10 @@ public class ServerThread implements Runnable {
 			{				
 				responseWriter.println("Request has been recieved by ");
 				Job job = new Job(new RandomValueGenerator());
-				
+				synchronized(jobs)
+				{
+					jobs.add(job);
+				}
 			}
 		} 
 		catch (IOException e) {
