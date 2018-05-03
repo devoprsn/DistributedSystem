@@ -9,4 +9,9 @@ public class Job {
 		//set the duration of the job
 		this.duration = (rand.getTrueWithProbability(.2) ? 60 : 30 );		
 	}
+	
+	public int getDuration()
+	{
+		return duration;
+	}
 }
