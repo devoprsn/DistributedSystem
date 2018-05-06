@@ -1,27 +1,28 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.*;
-import java.net.UnknownHostException;
 
 public class SlaveServerThread implements Runnable{
 
 	String IPAddress;
-	public SlaveServerThread(String IPAddress)
+	int portNumber;
+	String currentJob;
+	public SlaveServerThread(String IPAddress, int portNumber)
 	{
 		this.IPAddress = IPAddress;
+		this.portNumber = portNumber;
 	}
 
 	@Override
 	public void run() 
 	{
-		try (Socket slaveSocket = new Socket(IPAddress, 4501);
-			ObjectOutputStream outputStream = new ObjectOutputStream(slaveSocket.getOutputStream());
-			BufferedReader requestReader = new BufferedReader(new InputStreamReader(slaveSocket.getInputStream()))
-				) {
-			Job curr;
+		try(Socket slaveSocket = new Socket(IPAddress, portNumber);
+			PrintWriter outputStream =new  PrintWriter(slaveSocket.getOutputStream(), true);
+			BufferedReader requestReader = new BufferedReader(new InputStreamReader(slaveSocket.getInputStream())))				
+		{	
+			while(currentJob != null)
+			{
+				outputStream.write(currentJob);
+			}
 		}
 		catch(UnknownHostException e)
 		{
@@ -31,5 +32,12 @@ public class SlaveServerThread implements Runnable{
 		{			
 			e.printStackTrace();
 		}
+		
+	}
+	
+	public void addJob(String job)
+	{
+		this.currentJob = job;
+		
 	}
 }
