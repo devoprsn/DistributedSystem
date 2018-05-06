@@ -10,8 +10,8 @@ public class ClientServerThread implements Runnable {
 	
 	private ServerSocket serverSocket = null;
 	int id; 
-	LinkedList<Job> jobs;
-	public ClientServerThread(ServerSocket s, int id, LinkedList<Job> jobs)
+	LinkedList<String> jobs;
+	public ClientServerThread(ServerSocket s, int id, LinkedList<String> jobs)
 	{
 		serverSocket = s;
 		this.id = id;
@@ -28,8 +28,8 @@ public class ClientServerThread implements Runnable {
 			String requestString;
 			while ((requestString = requestReader.readLine()) != null) 
 			{				
-				responseWriter.println("Request has been received by ");
-				Job job = new Job(new RandomValueGenerator());
+				responseWriter.println("Request has been received by thread " + id);
+				String job = requestString;
 				synchronized(jobs)
 				{
 					jobs.add(job);

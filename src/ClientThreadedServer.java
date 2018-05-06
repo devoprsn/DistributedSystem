@@ -7,9 +7,9 @@ import java.util.LinkedList;
 public class ClientThreadedServer implements Runnable{
 	
 	private int portNumber;
-	private LinkedList<Job> jobs;
+	private LinkedList<String> jobs;
 	
-	public ClientThreadedServer(int portNumber, LinkedList<Job> jobs)
+	public ClientThreadedServer(int portNumber, LinkedList<String> jobs)
 	{
 		this.portNumber = portNumber;
 		this.jobs = jobs;
@@ -25,7 +25,7 @@ public class ClientThreadedServer implements Runnable{
 		{
 			ArrayList<Thread> threads = new ArrayList<Thread>();
 			for (int i = 0; i < THREADS; i++)
-				threads.add(new Thread(new ServerThread(serverSocket, i, jobs)));
+				threads.add(new Thread(new ClientServerThread(serverSocket, i, jobs)));
 			for (Thread t : threads)
 				t.start();
 			
