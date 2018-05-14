@@ -1,15 +1,19 @@
 import java.io.*;
 import java.net.*;
 
-public class SlaveServerThread implements Runnable{
+public class SlaveServerThread extends Thread{
 
-	String IPAddress;
-	int portNumber;
-	String currentJob;
-	public SlaveServerThread(String IPAddress, int portNumber)
+	private String IPAddress;
+	private int portNumber;
+	private int id;
+	
+	private String currentJob;
+	
+	public SlaveServerThread(String IPAddress, int portNumber, int id)
 	{
 		this.IPAddress = IPAddress;
 		this.portNumber = portNumber;
+		this.id =id;
 	}
 
 	@Override
@@ -35,9 +39,17 @@ public class SlaveServerThread implements Runnable{
 		
 	}
 	
+	
+	
+	
 	public void addJob(String job)
 	{
 		this.currentJob = job;
 		
+	}
+	
+	public int getID()
+	{
+		return id;
 	}
 }
