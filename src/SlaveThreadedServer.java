@@ -25,8 +25,7 @@ public class SlaveThreadedServer implements Runnable
 	  slaveThreads = new ArrayList<SlaveServerThread>();
 	  
 	  //instantiate a thread that will take care of load balancing. redistributing the jobs every so often
-	  redistributeThread = new RedistributingThread(idleSlaves,workingSlaves);
-	  
+	  redistributeThread = new RedistributingThread(idleSlaves,workingSlaves);  
 	  
 	  
    }
@@ -47,8 +46,7 @@ public class SlaveThreadedServer implements Runnable
 		}
 		
 		
-		//start all slaves off on the idleSlaves list:
-		
+		//start all slaves off on the idleSlaves list:		
 		idleSlaves.addAll(slaveThreads);
 		
 		//start the redistributing thread:
@@ -61,24 +59,27 @@ public class SlaveThreadedServer implements Runnable
 		{
 			if(!jobs.isEmpty())
 			{
-				synchronized(jobs)
-				{
-				    if (!idleSlaves.isEmpty())
-				    {
-					idleSlaves.getFirst().addJob(jobs.removeFirst());
-					
-				    }
-				    
-				    else
-				    {
-				    	workingSlaves.getFirst().addJob(jobs.removeFirst());
-				    }
-				}
 				
-				
-				
-				    workingSlaves.add(idleSlaves.removeFirst());
-				
+			    if (!idleSlaves.isEmpty())
+			    {
+			    	synchronized(jobs)
+					{
+			    		idleSlaves.getFirst().addJob(jobs.removeFirst());
+					}
+			    	workingSlaves.add(idleSlaves.removeFirst());
+			    }
+			    
+			    else
+			    {
+			    	synchronized(jobs)
+					{
+			    		SlaveServerThread first = workingSlaves.removeFirst();
+			    		first.addJob(jobs.removeFirst());
+			    		workingSlaves.addLast(first);
+					}
+			    	
+			    }			
+								    				
 			}
 		}
 			
@@ -99,9 +100,9 @@ public class SlaveThreadedServer implements Runnable
 				idleSlaves.add(t);
 			}
 				
-			}
 		}
 	}
+}
 
 
 
