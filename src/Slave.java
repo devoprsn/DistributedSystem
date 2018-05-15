@@ -44,13 +44,12 @@ public class Slave {
 		{
 			String jobRequest;
 			SlaveTaskThread taskThread = new SlaveTaskThread(tasks);
-			taskThread.run();
+			taskThread.start();
 			
 			while ((jobRequest = requestReader.readLine()) != null)
 			{				
 				Job job = new Job(rand);
-				tasks.add(job);				
-				
+				tasks.add(job);								
 			}
 			
 			taskThread.join();
@@ -59,7 +58,8 @@ public class Slave {
 			System.out.println(
 					"Exception caught when trying to listen on port " + serverSocket.getLocalPort() + " or listening for a connection");
 			System.out.println(e.getMessage());
-		} catch (InterruptedException e) 
+		} 
+		catch (InterruptedException e) 
 		{
 			e.printStackTrace();
 		}		

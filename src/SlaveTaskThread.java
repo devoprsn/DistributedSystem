@@ -11,14 +11,18 @@ public class SlaveTaskThread extends Thread{
 	@Override
 	public void run() 
 	{
-		while(tasks.size() != 0)
+		while(true)
 		{
-			try {
-				sleep(tasks.getFirst().getDuration());
-			} 
-			catch (InterruptedException e)
+			while(!tasks.isEmpty())
 			{
-				e.printStackTrace();
+				try {
+					//perform task
+					sleep(tasks.getFirst().getDuration());
+				} 
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}

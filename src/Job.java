@@ -7,7 +7,7 @@ public class Job {
 	{
 		this.rand = rand;
 		//set the duration of the job
-		this.duration = (rand.getTrueWithProbability(.2) ? 60 : 30 );		
+		this.duration = (rand.getTrueWithProbability(.2) ? 60000 : 30000 );		
 	}
 	
 	public int getDuration()
