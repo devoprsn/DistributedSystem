@@ -36,23 +36,33 @@ public class Slave {
 		}
 			
 		LinkedList<Job> tasks = new LinkedList<Job>();
+		
+		
 		try (Socket clientSocket = serverSocket.accept();
 					PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 					BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
 		{
 			String jobRequest;
-			while ((jobRequest = requestReader.readLine()) != null) //really needs to receive a job
+			SlaveTaskThread taskThread = new SlaveTaskThread(tasks);
+			taskThread.run();
+			
+			while ((jobRequest = requestReader.readLine()) != null)
 			{				
 				Job job = new Job(rand);
-				tasks.add(job);
-					
+				tasks.add(job);				
 				
 			}
-			} 
-			catch (IOException e) {
-				System.out.println(
-						"Exception caught when trying to listen on port " + serverSocket.getLocalPort() + " or listening for a connection");
-				System.out.println(e.getMessage());
-			}
+			
+			taskThread.join();
+		} 
+		catch (IOException e) {
+			System.out.println(
+					"Exception caught when trying to listen on port " + serverSocket.getLocalPort() + " or listening for a connection");
+			System.out.println(e.getMessage());
+		} catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}		
+		
 	}
 }
