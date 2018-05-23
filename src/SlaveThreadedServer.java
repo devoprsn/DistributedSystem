@@ -38,7 +38,7 @@ public class SlaveThreadedServer implements Runnable
 		
 		for (int i = 0; i < THREADS; i++)
 		{
-			slaveThreads.add(new SlaveServerThread(iPAddresses[i], portNumbers[i], i ));
+			slaveThreads.add(new SlaveServerThread(iPAddresses[i], portNumbers[i], i , this));
 		}
 		for (Thread t : slaveThreads)
 		{
@@ -73,6 +73,7 @@ public class SlaveThreadedServer implements Runnable
 			    {
 			    	synchronized(jobs)
 					{
+			    		//if all slaves are working, give to 1st working slave and move it to the last position in working slaves
 			    		SlaveServerThread first = workingSlaves.removeFirst();
 			    		first.addJob(jobs.removeFirst());
 			    		workingSlaves.addLast(first);
