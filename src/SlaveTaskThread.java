@@ -1,9 +1,13 @@
+
+import java.io.PrintWriter;
 import java.util.LinkedList;
 
 public class SlaveTaskThread extends Thread{
 
-	LinkedList<Job> tasks;
-	public SlaveTaskThread(LinkedList<Job> tasks)
+	private LinkedList<Job> tasks;
+	private PrintWriter responseWriter; //to tell the slaveServerThread that it is done
+	
+	public SlaveTaskThread(LinkedList<Job> tasks, PrintWriter responseWriter)
 	{
 		this.tasks = tasks;
 	}
@@ -18,12 +22,22 @@ public class SlaveTaskThread extends Thread{
 				try {
 					//perform task
 					sleep(tasks.getFirst().getDuration());
+					
+					//remove task from task list
+					
+					tasks.removeFirst();
+				
 				} 
 				catch (InterruptedException e)
 				{
 					e.printStackTrace();
 				}
 			}
+			
+			//no tasks left, notify slaveServerThread
+			
+			responseWriter.println("Done");
+			
 		}
 	}
 }

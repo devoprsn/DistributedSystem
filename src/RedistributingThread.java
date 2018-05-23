@@ -1,6 +1,7 @@
 import java.util.LinkedList;
 
-//created this to deal with the load balancing that will occur at given intervals - will check idle slaves and working slaves and redistribute the jobs if needed
+//created this to deal with the load balancing that will occur at given intervals 
+//will check idle slaves and working slaves and redistribute the jobs if needed
 
 public class RedistributingThread extends Thread{
 	

@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-//where will we put the code for the slave to actually carry out the work - the slave itself may need a worker thread to work while communicating...
+//here the slave has a serverSocket that communicates with its SlaveServerThread's clientSocket
 
 public class Slave {
 
@@ -43,13 +43,17 @@ public class Slave {
 					BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
 		{
 			String jobRequest;
-			SlaveTaskThread taskThread = new SlaveTaskThread(tasks);
+			SlaveTaskThread taskThread = new SlaveTaskThread(tasks,responseWriter);
 			taskThread.start();
 			
 			while ((jobRequest = requestReader.readLine()) != null)
 			{				
 				Job job = new Job(rand);
-				tasks.add(job);								
+				
+				
+				tasks.add(job);	
+				
+				
 			}
 			
 			taskThread.join();
