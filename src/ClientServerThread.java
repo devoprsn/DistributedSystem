@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-public class ClientServerThread implements Runnable {
+public class ClientServerThread extends Thread {
 	
 	private ServerSocket serverSocket = null;
 	int id; 
