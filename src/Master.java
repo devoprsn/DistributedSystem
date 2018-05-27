@@ -14,18 +14,22 @@ public class Master
 	   System.out.println("Master is running!");
 	   
 	   //master has a thread to communicate with the clients who give in jobs and a thread to communicate with its slaves who do the work
-	   
-	   Thread clientServerThread = new Thread(new ClientThreadedServer(40121, jobs));  //clients
-	   clientServerThread.start();
-	   clientServerThread.join();
-	  
-	   System.out.println("ClientThreadedServer set up!");
-	   
-	   Thread slaveServerthread = new Thread(new SlaveThreadedServer(jobs,iPAddresses, portNumbers));  //slaves
-	   slaveServerthread.start();
-	   slaveServerthread.join();
-	   
-	   
-	   
+
+	   Thread clientThreadedServer = new ClientThreadedServer(40121, jobs);  //clients
+	   clientThreadedServer.start();	
+		
+	   SlaveThreadedServer slaveThreadedServer = new SlaveThreadedServer(jobs, iPAddresses, portNumbers);
+	   slaveThreadedServer.start();
+	  	
+	   try {
+	 	clientThreadedServer.join();
+		slaveThreadedServer.join();
+	   } 
+	   catch (InterruptedException e)
+	   {
+	   	e.printStackTrace();
+	   }		
+	   //program ends	   
+
    }
 }
