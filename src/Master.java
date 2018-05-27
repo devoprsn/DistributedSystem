@@ -15,7 +15,7 @@ public class Master
 	   
 	   //master has a thread to communicate with the clients who give in jobs and a thread to communicate with its slaves who do the work
 	   
-	   Thread clientServerThread = new Thread(new ClientThreadedServer(30121, jobs));  //clients
+	   Thread clientServerThread = new Thread(new ClientThreadedServer(40121, jobs));  //clients
 	   clientServerThread.start();
 	   clientServerThread.join();
 	  
@@ -24,6 +24,8 @@ public class Master
 	   Thread slaveServerthread = new Thread(new SlaveThreadedServer(jobs,iPAddresses, portNumbers));  //slaves
 	   slaveServerthread.start();
 	   slaveServerthread.join();
+	   
+	   
 	   
    }
 }
