@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-public class ClientServerThread implements Runnable {
+public class ClientServerThread extends Thread {
 	
 	private ServerSocket serverSocket = null;
 	int id; 
@@ -21,14 +21,16 @@ public class ClientServerThread implements Runnable {
 	
 	@Override
 	public void run() 
-	{
+	{			
 		try (Socket clientSocket = serverSocket.accept();
 			  PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 			 BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
 		
 		  
 		{
-			
+
+			System.out.println("ClientServerThread "+id+"run() has begun!"); //println for testing
+
 			
 			String requestString;
 			while ((requestString = requestReader.readLine()) != null) 

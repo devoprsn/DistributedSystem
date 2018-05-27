@@ -4,7 +4,7 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class ClientThreadedServer implements Runnable{
+public class ClientThreadedServer extends Thread{
 	
 	private int portNumber;
 	private LinkedList<String> jobs;
@@ -17,6 +17,7 @@ public class ClientThreadedServer implements Runnable{
 	
 	@Override
 	public void run() 
+
 	{		
 		
 		final int THREADS = 3;	
@@ -29,6 +30,7 @@ public class ClientThreadedServer implements Runnable{
 			
 			ArrayList<Thread> threads = new ArrayList<Thread>();
 			for (int i = 0; i < THREADS; i++)
+
 				threads.add(new Thread(new ClientServerThread(serverSocket, i, jobs)));
 			
 			
@@ -36,7 +38,6 @@ public class ClientThreadedServer implements Runnable{
 				t.start();
 			
 			System.out.println("Each clientServerThread is started!");
-			
 			
 			for (Thread t: threads)
 			{
@@ -50,10 +51,10 @@ public class ClientThreadedServer implements Runnable{
 		
 		catch (IOException e) {
 			System.out.println(
+
 					"Exception caught when trying to listen on port " + portNumber+ " or listening for a connection");
-			System.out.println(e.getMessage());
+
 		}
-		
 	}
 
 }

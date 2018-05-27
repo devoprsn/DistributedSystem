@@ -21,7 +21,7 @@ public class Master
 	  
 	   System.out.println("ClientThreadedServer set up!");
 	   
-	   Thread slaveServerthread = new Thread(new SlaveThreadedServer(iPAddresses, portNumbers, jobs));  //slaves
+	   Thread slaveServerthread = new Thread(new SlaveThreadedServer(jobs,iPAddresses, portNumbers));  //slaves
 	   slaveServerthread.start();
 	   slaveServerthread.join();
 	   

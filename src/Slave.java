@@ -11,11 +11,10 @@ import java.util.LinkedList;
 public class Slave {
 
 	private static IRandomValueGenerator rand;
-
 	
-	public Slave(int portNumber, IRandomValueGenerator rand)
+	public Slave(IRandomValueGenerator rand)
 	{
-		this.rand = rand;
+		Slave.rand = rand;
 	}
 	
 	public static void main(String[] args)
@@ -34,7 +33,7 @@ public class Slave {
 		{
 		        System.out.println(e.getMessage());
 		}
-			
+		System.out.println("Slave initialized"); //println for testing	
 		LinkedList<Job> tasks = new LinkedList<Job>();
 		
 		
@@ -49,7 +48,7 @@ public class Slave {
 			while ((jobRequest = requestReader.readLine()) != null)
 			{				
 				Job job = new Job(rand);
-				
+				System.out.println(jobRequest);
 				
 				tasks.add(job);	
 				
