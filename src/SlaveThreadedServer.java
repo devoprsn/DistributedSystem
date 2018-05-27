@@ -43,6 +43,7 @@ public class SlaveThreadedServer extends Thread
 		String job;
 		//continuously loop through and check if there are more jobs to give out
 		while(true)
+
 		   {
 				if(!jobs.isEmpty())
 				{
@@ -78,11 +79,13 @@ public class SlaveThreadedServer extends Thread
 				
 	}
 	
+
 	//method for the slave/slaveserverthread to tell the threadedserver when it's done. 
 	// How will the slave/slaveserverthread call this method?
 	
 	public void slaveDoneMessage(int id)
 	{  
+		System.out.println("Slave " + id+ " is done!");
 		
 		for (SlaveServerThread t: slaveThreads)
 		{
@@ -93,6 +96,8 @@ public class SlaveThreadedServer extends Thread
 			}
 				
 		}
+		
+		
 	}
 }
 
