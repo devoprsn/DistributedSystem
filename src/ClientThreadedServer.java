@@ -19,29 +19,38 @@ public class ClientThreadedServer implements Runnable{
 	public void run() 
 	{		
 		
-		final int THREADS = 3;		
+		final int THREADS = 3;	
+		
+		System.out.println("ClientThreadedServer's run() method has begun!");
 		
 		try (ServerSocket serverSocket = new ServerSocket(portNumber);) 
 		{
+			System.out.println("ServerSocket set up in try");
+			
 			ArrayList<Thread> threads = new ArrayList<Thread>();
 			for (int i = 0; i < THREADS; i++)
 				threads.add(new Thread(new ClientServerThread(serverSocket, i, jobs)));
+			
+			
 			for (Thread t : threads)
 				t.start();
 			
-			/*for (Thread t: threads)
+			System.out.println("Each clientServerThread is started!");
+			
+			
+			for (Thread t: threads)
 			{
 				try {
 					t.join();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}*/
+			}
 		} 
 		
 		catch (IOException e) {
 			System.out.println(
-					"Exception caught when trying to listen on port " + "30122"  + " or listening for a connection");
+					"Exception caught when trying to listen on port " + portNumber+ " or listening for a connection");
 			System.out.println(e.getMessage());
 		}
 		

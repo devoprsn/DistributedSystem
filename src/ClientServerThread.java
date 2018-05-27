@@ -11,6 +11,7 @@ public class ClientServerThread implements Runnable {
 	private ServerSocket serverSocket = null;
 	int id; 
 	LinkedList<String> jobs;
+	
 	public ClientServerThread(ServerSocket s, int id, LinkedList<String> jobs)
 	{
 		serverSocket = s;
@@ -22,9 +23,13 @@ public class ClientServerThread implements Runnable {
 	public void run() 
 	{
 		try (Socket clientSocket = serverSocket.accept();
-				PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
-				BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
+			  PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+			 BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
+		
+		  
 		{
+			
+			
 			String requestString;
 			while ((requestString = requestReader.readLine()) != null) 
 			{				

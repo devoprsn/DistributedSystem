@@ -59,7 +59,7 @@ public class SlaveThreadedServer implements Runnable
 		{
 			if(!jobs.isEmpty())
 			{
-				
+				System.out.println("more jobs to give out!");
 			    if (!idleSlaves.isEmpty())
 			    {
 			    	synchronized(jobs)
@@ -87,11 +87,13 @@ public class SlaveThreadedServer implements Runnable
 	}
 	
 	
+	
 	//method for the slave/slaveserverthread to tell the threadedserver when it's done. 
 	// How will the slave/slaveserverthread call this method?
 	
 	public void slaveDoneMessage(int id)
 	{  
+		System.out.println("Slave " + id+ " is done!");
 		
 		for (SlaveServerThread t: slaveThreads)
 		{
@@ -102,6 +104,8 @@ public class SlaveThreadedServer implements Runnable
 			}
 				
 		}
+		
+		
 	}
 }
 
