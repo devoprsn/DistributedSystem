@@ -20,22 +20,20 @@ public class SlaveTaskThread extends Thread{
 		
 		while(true)
 		{
-			while(!tasks.isEmpty())
-			{
-				try {
-					//perform task
-					sleep(tasks.getFirst().getDuration());
-					
-					//remove task from task list				
-					tasks.removeFirst();
+			while(tasks.isEmpty());
+			try {
+				//perform task
+				sleep(tasks.getFirst().getDuration());
 				
-				} 
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-			}
+				//remove task from task list				
+				tasks.removeFirst();
 			
+			} 
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		
 			//no tasks left, notify slaveServerThread			
 			responseWriter.println("Done");		
 		}
