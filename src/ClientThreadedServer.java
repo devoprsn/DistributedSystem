@@ -17,7 +17,8 @@ public class ClientThreadedServer extends Thread{
 	
 	@Override
 	public void run() 
-	{				
+	{
+		System.out.println("ClientThreadedServer initialized"); //println for testing
 		final int THREADS = 3;		
 		
 		try (ServerSocket serverSocket = new ServerSocket(portNumber);) 

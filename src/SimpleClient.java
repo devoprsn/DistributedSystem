@@ -7,11 +7,11 @@ public class SimpleClient {
 		// Hardcode in IP and Port here if required
     	args = new String[] {"127.0.0.1", "40121"};
     	
-        if (args.length != 2) {
-            System.err.println(
-                "Usage: java EchoClient <host name> <port number>");
-            System.exit(1);
-        }
+//        if (args.length != 2) {
+//            System.err.println(
+//                "Usage: java EchoClient <host name> <port number>");
+//            System.exit(1);
+//        }
 
         String hostName = args[0];
         int portNumber = Integer.parseInt(args[1]);
@@ -27,6 +27,8 @@ public class SimpleClient {
                 new BufferedReader(
                     new InputStreamReader(System.in))
         ) {
+        	System.out.println("Client initialized");
+        	
             String userInput;
 			String serverResponse;
             while ((userInput = stdIn.readLine()) != null) {
