@@ -29,12 +29,13 @@ public class ClientServerThread extends Thread {
 		  
 		{
 
-			System.out.println("ClientServerThread "+id+"run() has begun!"); //println for testing
+			System.out.println("ClientServerThread " +id+ " run() has begun and accepted client socket!"); //println for testing
 
 			
 			String requestString;
 			while ((requestString = requestReader.readLine()) != null) 
-			{				
+			{
+				
 				responseWriter.println("Request has been received by thread " + id);
 				String job = requestString;
 				synchronized(jobs)
@@ -43,6 +44,7 @@ public class ClientServerThread extends Thread {
 				}
 			}
 		} 
+		
 		catch (IOException e) {
 			System.out.println(
 					"Exception caught when trying to listen on port " + serverSocket.getLocalPort() + " or listening for a connection");
