@@ -31,6 +31,7 @@ public class SimpleClient {
         ) {
         	System.out.println("Client initialized");
         	
+        	
             String userInput;
 			String serverResponse;
             while ((userInput = stdIn.readLine()) != null) {

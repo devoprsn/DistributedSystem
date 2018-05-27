@@ -15,7 +15,7 @@ public class Master
 	   
 	   //master has a thread to communicate with the clients who give in jobs and a thread to communicate with its slaves who do the work
 
-	   Thread clientThreadedServer = new ClientThreadedServer(40121, jobs);  //clients
+	   Thread clientThreadedServer = new ClientThreadedServer(30121, jobs);  //clients
 	   clientThreadedServer.start();	
 		
 	   SlaveThreadedServer slaveThreadedServer = new SlaveThreadedServer(jobs, iPAddresses, portNumbers);
@@ -23,10 +23,11 @@ public class Master
 	  	
 	   try {
 	 	clientThreadedServer.join();
-		slaveThreadedServer.join();
+		//slaveThreadedServer.join();
 	   } 
 	   catch (InterruptedException e)
 	   {
+		   System.out.println("Error: ThreadedServers coudn't join.");
 	   	e.printStackTrace();
 	   }		
 	   //program ends	   

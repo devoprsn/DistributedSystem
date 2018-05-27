@@ -38,6 +38,9 @@ public class SlaveThreadedServer extends Thread
 		{
 			t.start();
 		}	
+		
+		
+		//all slaves start off as idleSlaves
 		idleSlaves.addAll(slaveThreads);
 			
 		String job;
