@@ -44,26 +44,37 @@ public class SlaveThreadedServer extends Thread
 		//all slaves start off as idleSlaves
 		idleSlaves.addAll(slaveThreads);
 			
-
+		String job=null;
+		boolean empty= true; //jobs are empty or not
 		
 		
-
 		//continuously loop through and check if there are more jobs to give out
 		while(true)
-		{
 
-
+		   {
+			      
+			    empty=true;
+                                 synchronized (jobs)
+                            {
+			  
 				if(!jobs.isEmpty())
 				{
-					System.out.println("Jobs are available to give out!");
-					
+					System.out.println("Jobs are available to give out!"); //this worked
+                                        empty=false;
+                                        job = jobs.removeFirst();
+                                }
+				
+                            }	
+
+                                  if(!empty)
+                              {
+
 				    if (!idleSlaves.isEmpty())
 				    {
 				    	SlaveServerThread idleSlave = idleSlaves.getFirst();				    	
-				    	synchronized(jobs)
-						{	
-				    		idleSlave.addJob(jobs.removeFirst());
-						}
+				    		
+				    		idleSlave.addJob(job);
+						
 				    	
 				    	System.out.println("Sent job to thread "+idleSlave.getID());
 				    	workingSlaves.add(idleSlaves.removeFirst());
@@ -72,23 +83,24 @@ public class SlaveThreadedServer extends Thread
 				    else
 				    {
 				    	SlaveServerThread first = workingSlaves.removeFirst();
-				    	synchronized(jobs)
-						{
+				    	
 				    		//if all slaves are working, give to 1st working slave and move it to the last position in working slaves			    		
-				    		first.addJob(jobs.removeFirst());					    		
-						}	
+				    		first.addJob(job);					    		
+							
 				    	System.out.println("Sent job to thread "+first.getID());
 				    	workingSlaves.addLast(first);
 				    }												    				
 				
+                              }
 
-//				else
-//				{
-//					//redistribute?
-//				}
-
+                            
+				/*else
+				{
+					
+					//redistribute?
+				}*/
 			}	 		
-		}		
+				
 	}
 	
 
@@ -97,7 +109,7 @@ public class SlaveThreadedServer extends Thread
 	
 	public void slaveDoneMessage(int id)
 	{  
-		System.out.println("Slave " + id+ " is done!");
+		System.out.println("SlaveThreadedServer: Slave " + id+ " is done!");
 		
 		for (SlaveServerThread t: slaveThreads)
 		{

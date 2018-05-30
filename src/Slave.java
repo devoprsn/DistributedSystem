@@ -12,9 +12,9 @@ public class Slave {
 
 	private static IRandomValueGenerator rand;
 	
-	public Slave(IRandomValueGenerator rand)
+	public Slave()
 	{
-		Slave.rand = rand;
+		rand = new RandomValueGenerator();
 	}
 	
 	public static void main(String[] args)
@@ -33,24 +33,31 @@ public class Slave {
 		{
 		        System.out.println(e.getMessage());
 		}
+
+                Slave slave = new Slave();
+
 		System.out.println("Slave initialized"); //println for testing	
 		LinkedList<Job> tasks = new LinkedList<Job>();
 		
 		
 		try (Socket clientSocket = serverSocket.accept();
-					PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+					//PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 					BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
 		{
 			String jobRequest;
-			SlaveTaskThread taskThread = new SlaveTaskThread(tasks,responseWriter);
+			//SlaveTaskThread taskThread = new SlaveTaskThread(tasks,responseWriter);
+                          SlaveTaskThread taskThread = new SlaveTaskThread(tasks,clientSocket);
 			taskThread.start();
 			
 			while ((jobRequest = requestReader.readLine()) != null)
 			{				
 				Job job = new Job(rand);
-				System.out.println(jobRequest);
+				System.out.println("Slave: jobRequest- " + jobRequest);//this worked!
 				
+                                synchronized(tasks)
+                                {
 				tasks.add(job);	
+                                }
 				
 				
 			}

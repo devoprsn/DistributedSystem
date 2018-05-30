@@ -40,7 +40,10 @@ public class ClientServerThread extends Thread {
 				String job = requestString;
 				synchronized(jobs)
 				{
+					
 					jobs.add(job);
+					System.out.println("ClientServerThread: job was added to global jobs by thread " + id);
+					System.out.println(jobs); //println for testing
 				}
 			}
 		} 

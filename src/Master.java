@@ -8,8 +8,10 @@ public class Master
 	   LinkedList<String> jobs = new LinkedList<String>();
 	   
 	   //maybe give each slaves ipaddress and port # (all localhost for now but diff. port - so we can test on our machines)
-	   String[] iPAddresses = {"127.0.0.1", "127.0.0.1"};
-	   int [] portNumbers = {40121,40123};
+	   //String[] iPAddresses = {"127.0.0.1", "127.0.0.1","127.0.0.1","127.0.0.1"};
+	   //int [] portNumbers = {40121,40123,40124,40125};
+             String[] iPAddresses = {"127.0.0.1", "127.0.0.1"};
+             int [] portNumbers = {40121,40123};
 	   
 	   System.out.println("Master is running!");
 	   
@@ -20,6 +22,8 @@ public class Master
 		
 	   SlaveThreadedServer slaveThreadedServer = new SlaveThreadedServer(jobs, iPAddresses, portNumbers);
 	   slaveThreadedServer.start();
+	   
+	 
 	  	
 	   try {
 	 	clientThreadedServer.join();
@@ -30,7 +34,9 @@ public class Master
 		   System.out.println("Error: ThreadedServers coudn't join.");
 	   	e.printStackTrace();
 	   }		
-	   //program ends	   
+	   //program ends
+	   
+	  
 
    }
 }
