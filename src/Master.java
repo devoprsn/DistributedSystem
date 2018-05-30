@@ -23,7 +23,7 @@ public class Master
 	  	
 	   try {
 	 	clientThreadedServer.join();
-		//slaveThreadedServer.join();
+		slaveThreadedServer.join();
 	   } 
 	   catch (InterruptedException e)
 	   {

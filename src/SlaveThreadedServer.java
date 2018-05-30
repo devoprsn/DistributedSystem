@@ -38,18 +38,26 @@ public class SlaveThreadedServer extends Thread
 		{
 			t.start();
 		}	
-		
+	
+		System.out.println("All slavesthreads are started!");//yes!
 		
 		//all slaves start off as idleSlaves
 		idleSlaves.addAll(slaveThreads);
 			
 		String job;
+		
+		
+		
 		//continuously loop through and check if there are more jobs to give out
 		while(true)
 
 		   {
+			
+			  
+			  
 				if(!jobs.isEmpty())
 				{
+					System.out.println("Jobs are available to give out!");
 					
 				    if (!idleSlaves.isEmpty())
 				    {
@@ -58,6 +66,7 @@ public class SlaveThreadedServer extends Thread
 						{	
 				    		idleSlave.addJob(jobs.removeFirst());
 						}
+				    	
 				    	System.out.println("Sent job to thread "+idleSlave.getID());
 				    	workingSlaves.add(idleSlaves.removeFirst());
 				    }
@@ -74,10 +83,10 @@ public class SlaveThreadedServer extends Thread
 				    	workingSlaves.addLast(first);
 				    }												    				
 				}
-				else
+				/*else
 				{
 					//redistribute?
-				}
+				}*/
 			}	 		
 				
 	}
