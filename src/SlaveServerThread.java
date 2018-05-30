@@ -7,7 +7,7 @@ public class SlaveServerThread extends Thread{
 	private int id;
 	private String IPAddress;
 	private int portNumber;
-	private LinkedList<String> jobs;
+	//private LinkedList<String> jobs;
 	private SlaveThreadedServer myThreadedServerBoss;
 	private PrintWriter outputStream;
 	
@@ -17,7 +17,7 @@ public class SlaveServerThread extends Thread{
 		this.IPAddress = IPAddress;
 		this.portNumber = portNumber;	
 		this.myThreadedServerBoss = parent;
-		this.jobs = new LinkedList<String>();
+		//this.jobs = new LinkedList<String>();
 	}
 	
 
@@ -57,7 +57,7 @@ public class SlaveServerThread extends Thread{
 	
 	public void addJob(String job)
 	{
-		jobs.add(job);
+		//jobs.add(job);
 		outputStream.println(job);
 		System.out.println("Slave Thread "+id+" added job");
 	}

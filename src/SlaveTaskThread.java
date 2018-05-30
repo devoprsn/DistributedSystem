@@ -22,8 +22,8 @@ public class SlaveTaskThread extends Thread{
 		{
 			while(tasks.isEmpty());
 			
-			while(!tasks.isEmpty())
-			{	
+				while(!tasks.isEmpty())
+				{
 				try {
 					//perform task
 					sleep(tasks.getFirst().getDuration());
@@ -36,10 +36,11 @@ public class SlaveTaskThread extends Thread{
 				{
 					e.printStackTrace();
 				}
-			}
-		
+			
+				}
 			//no tasks left, notify slaveServerThread			
-			responseWriter.println("Done");		
+			responseWriter.println("Done");	
+			
 		}
 	}
 }
