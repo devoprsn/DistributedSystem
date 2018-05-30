@@ -43,11 +43,10 @@ public class SlaveThreadedServer extends Thread
 		//all slaves start off as idleSlaves
 		idleSlaves.addAll(slaveThreads);
 			
-		String job;
 		//continuously loop through and check if there are more jobs to give out
 		while(true)
+		{
 
-		   {
 				if(!jobs.isEmpty())
 				{
 					
@@ -74,10 +73,10 @@ public class SlaveThreadedServer extends Thread
 				    	workingSlaves.addLast(first);
 				    }												    				
 				}
-				else
-				{
-					//redistribute?
-				}
+//				else
+//				{
+//					//redistribute?
+//				}
 			}	 		
 				
 	}

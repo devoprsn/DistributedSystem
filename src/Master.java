@@ -8,8 +8,8 @@ public class Master
 	   LinkedList<String> jobs = new LinkedList<String>();
 	   
 	   //maybe give each slaves ipaddress and port # (all localhost for now but diff. port - so we can test on our machines)
-	   String[] iPAddresses = {"127.0.0.1", "127.0.0.1","127.0.0.1","127.0.0.1"};
-	   int [] portNumbers = {40121,40123,40124,40125};
+	   String[] iPAddresses = {"127.0.0.1", "127.0.0.1"};
+	   int [] portNumbers = {40121,40123};
 	   
 	   System.out.println("Master is running!");
 	   
@@ -23,7 +23,7 @@ public class Master
 	  	
 	   try {
 	 	clientThreadedServer.join();
-		//slaveThreadedServer.join();
+		slaveThreadedServer.join();
 	   } 
 	   catch (InterruptedException e)
 	   {
