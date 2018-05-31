@@ -1,19 +1,17 @@
 import java.io.*;
-import java.net.Socket;
 import java.util.LinkedList;
 
 public class SlaveTaskThread extends Thread{
 
 	private LinkedList<Job> tasks;
 	private PrintWriter responseWriter; //to tell the slaveServerThread that it is done
-    private Socket clientSocket;
-	
-    // public SlaveTaskThread(LinkedList<Job> tasks, Socket clientSocket)
+    
+    
 	public SlaveTaskThread(LinkedList<Job> tasks, PrintWriter responseWriter)        
 	{
 		this.tasks = tasks;
 		this.responseWriter = responseWriter;
-        //this.clientSocket = clientSocket;
+        
 	}
 	
 	@Override
@@ -26,6 +24,7 @@ public class SlaveTaskThread extends Thread{
 		while(true)
 		{
 			empty = true;
+			
 			synchronized(tasks)
 			{
 				if(!tasks.isEmpty())
@@ -55,7 +54,11 @@ public class SlaveTaskThread extends Thread{
 				{
 					e.printStackTrace();
 				}
-			}			                                                             		
+				
+			}	
+			
+			
+			
 		}
 	}
 }
