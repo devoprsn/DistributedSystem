@@ -17,7 +17,6 @@ public class SlaveServerThread extends Thread{
 		this.IPAddress = IPAddress;
 		this.portNumber = portNumber;	
 		this.myThreadedServerBoss = parent;
-		//this.jobs = new LinkedList<String>();
 	}
 	
 
@@ -37,7 +36,7 @@ public class SlaveServerThread extends Thread{
 			while((done = requestReader.readLine()) != null)
 			{
 				myThreadedServerBoss.slaveDoneMessage(id);
-                               System.out.println("SlaveServerThread" + id + ": notified threadedServer that slave is done!");
+                System.out.println("SlaveServerThread" + id + ": notified threadedServer that slave is done!");
 			}
 		}
 		catch(UnknownHostException e)
@@ -58,8 +57,7 @@ public class SlaveServerThread extends Thread{
 	
 	public void addJob(String job)
 	{
-		//jobs.add(job);
 		outputStream.println(job);
-		System.out.println("Slave Thread "+id+" added job"); //this works
+		System.out.println("Slave Thread "+id+" added job");
 	}
 }

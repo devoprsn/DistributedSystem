@@ -23,6 +23,8 @@ public class Slave {
 			System.err.println("Usage: java EchoServer <port number>");
 			System.exit(1);
 		}
+		
+		Slave slave = new Slave();
 
 		int portNumber = Integer.parseInt(args[0]);
 		ServerSocket serverSocket = null;
@@ -34,19 +36,16 @@ public class Slave {
 		        System.out.println(e.getMessage());
 		}
 
-                Slave slave = new Slave();
-
 		System.out.println("Slave initialized"); //println for testing	
-		LinkedList<Job> tasks = new LinkedList<Job>();
-		
+		LinkedList<Job> tasks = new LinkedList<Job>();	
 		
 		try (Socket clientSocket = serverSocket.accept();
-					//PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+					PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 					BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
 		{
 			String jobRequest;
-			//SlaveTaskThread taskThread = new SlaveTaskThread(tasks,responseWriter);
-                          SlaveTaskThread taskThread = new SlaveTaskThread(tasks,clientSocket);
+			//SlaveTaskThread taskThread = new SlaveTaskThread(tasks,clientSocket);
+			SlaveTaskThread taskThread = new SlaveTaskThread(tasks,responseWriter);           
 			taskThread.start();
 			
 			while ((jobRequest = requestReader.readLine()) != null)
@@ -54,12 +53,10 @@ public class Slave {
 				Job job = new Job(rand);
 				System.out.println("Slave: jobRequest- " + jobRequest);//this worked!
 				
-                                synchronized(tasks)
-                                {
-				tasks.add(job);	
-                                }
-				
-				
+                synchronized(tasks)
+                {
+                	tasks.add(job);	
+                }				
 			}
 			
 			taskThread.join();

@@ -20,8 +20,7 @@ public class SlaveThreadedServer extends Thread
 	  idleSlaves = new LinkedList<SlaveServerThread>();
 	  workingSlaves = new LinkedList<SlaveServerThread>();  
 	  slaveThreads = new ArrayList<SlaveServerThread>();	  	  
-   }
-   
+   }   
 
 	@Override
 	public void run()
@@ -45,61 +44,52 @@ public class SlaveThreadedServer extends Thread
 		idleSlaves.addAll(slaveThreads);
 			
 		String job=null;
-		boolean empty= true; //jobs are empty or not
-		
+		boolean empty= true; //jobs are empty or not		
 		
 		//continuously loop through and check if there are more jobs to give out
 		while(true)
-
-		   {
-			      
-			    empty=true;
-                                 synchronized (jobs)
-                            {
-			  
+		{			      
+		    empty = true;
+            synchronized (jobs)
+            {			  
 				if(!jobs.isEmpty())
 				{
-					System.out.println("Jobs are available to give out!"); //this worked
-                                        empty=false;
-                                        job = jobs.removeFirst();
-                                }
-				
-                            }	
+                    empty=false;
+                    job = jobs.removeFirst();
+                }
+			
+             }	
 
-                                  if(!empty)
-                              {
-
-				    if (!idleSlaves.isEmpty())
-				    {
-				    	SlaveServerThread idleSlave = idleSlaves.getFirst();				    	
-				    		
-				    		idleSlave.addJob(job);
-						
-				    	
-				    	System.out.println("Sent job to thread "+idleSlave.getID());
-				    	workingSlaves.add(idleSlaves.removeFirst());
-				    }
-				    
-				    else
-				    {
-				    	SlaveServerThread first = workingSlaves.removeFirst();
-				    	
-				    		//if all slaves are working, give to 1st working slave and move it to the last position in working slaves			    		
-				    		first.addJob(job);					    		
-							
-				    	System.out.println("Sent job to thread "+first.getID());
-				    	workingSlaves.addLast(first);
-				    }												    				
-				
-                              }
-
-                            
-				/*else
-				{
+             if(!empty)
+             {
+			    if (!idleSlaves.isEmpty())
+			    {
+			    	SlaveServerThread idleSlave = idleSlaves.getFirst();				    					    		
+			    	idleSlave.addJob(job);
 					
-					//redistribute?
-				}*/
-			}	 		
+			    	
+			    	System.out.println("Sent job to thread "+idleSlave.getID());
+			    	workingSlaves.add(idleSlaves.removeFirst());
+			    }			    
+			    else
+			    {
+			    	SlaveServerThread first = workingSlaves.removeFirst();
+			    	
+			    		//if all slaves are working, give to 1st working slave and move it to the last position in working slaves			    		
+			    		first.addJob(job);					    		
+						
+			    	System.out.println("Sent job to thread "+first.getID());
+			    	workingSlaves.addLast(first);
+			    }												    				
+			
+             }
+                          
+			/*else
+			{
+				
+				//redistribute?
+			}*/
+		}	 		
 				
 	}
 	
@@ -119,8 +109,7 @@ public class SlaveThreadedServer extends Thread
 				idleSlaves.add(t);
 			}
 				
-		}
-		
+		}		
 		
 	}
 }
