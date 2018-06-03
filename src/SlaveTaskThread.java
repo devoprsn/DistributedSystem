@@ -10,8 +10,7 @@ public class SlaveTaskThread extends Thread{
 	public SlaveTaskThread(LinkedList<Job> tasks, PrintWriter responseWriter)        
 	{
 		this.tasks = tasks;
-		this.responseWriter = responseWriter;
-        
+		this.responseWriter = responseWriter;       
 	}
 	
 	@Override
@@ -19,7 +18,7 @@ public class SlaveTaskThread extends Thread{
 	{
 		System.out.println("SlaveTaskThread initialized"); //println for testing
 		
-		boolean empty = true, last = false;
+		boolean empty = true;
 		Job currTask = null;
 		while(true)
 		{
@@ -46,7 +45,7 @@ public class SlaveTaskThread extends Thread{
 						if(tasks.isEmpty()) 
 						{
 							 System.out.println("SlaveTaskThread: Done!");	                   
-					            responseWriter.println("Done");	
+					         responseWriter.println("Done");	
 						}
 					}
 				} 

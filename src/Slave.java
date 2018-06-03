@@ -9,13 +9,6 @@ import java.util.LinkedList;
 //here the slave has a serverSocket that communicates with its SlaveServerThread's clientSocket
 
 public class Slave {
-
-	private static IRandomValueGenerator rand;
-	
-	public Slave()
-	{
-		rand = new RandomValueGenerator();
-	}
 	
 	public static void main(String[] args)
 	{
@@ -24,7 +17,7 @@ public class Slave {
 			System.exit(1);
 		}
 		
-		Slave slave = new Slave();
+		IRandomValueGenerator rand = new RandomValueGenerator();
 
 		int portNumber = Integer.parseInt(args[0]);
 		ServerSocket serverSocket = null;
@@ -43,20 +36,25 @@ public class Slave {
 					PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 					BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
 		{
-			String jobRequest;
+			String msg;
 			//SlaveTaskThread taskThread = new SlaveTaskThread(tasks,clientSocket);
 			SlaveTaskThread taskThread = new SlaveTaskThread(tasks,responseWriter);           
 			taskThread.start();
 			
-			while ((jobRequest = requestReader.readLine()) != null)
-			{				
-				Job job = new Job(rand);
-				System.out.println("Slave: jobRequest- " + jobRequest);//this worked!
-				
-                synchronized(tasks)
-                {
-                	tasks.add(job);	
-                }				
+			while ((msg = requestReader.readLine()) != null)
+			{			
+				if(msg.equals("Job")) {
+					Job job = new Job(rand);
+					System.out.println("Slave: jobRequest- " + msg);//this worked!
+					
+	                synchronized(tasks)
+	                {
+	                	tasks.add(job);	
+	                }	
+				}
+				else if(msg.equals("Duration"))	{
+					responseWriter.println(duration(tasks));
+				}
 			}
 			
 			taskThread.join();
@@ -71,5 +69,16 @@ public class Slave {
 			e.printStackTrace();
 		}		
 		
+	}
+	
+	public static int duration(LinkedList<Job> tasks)
+	{
+		int seconds = 0;
+		for(Job job : tasks)
+		{
+			seconds += job.getDuration();
+		}
+		
+		return seconds;
 	}
 }

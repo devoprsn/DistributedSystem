@@ -84,11 +84,6 @@ public class SlaveThreadedServer extends Thread
 			
              }
                           
-			/*else
-			{
-				
-				//redistribute?
-			}*/
 		}	 		
 				
 	}
@@ -96,7 +91,6 @@ public class SlaveThreadedServer extends Thread
 
 	//method for the slave/slaveserverthread to tell the threadedserver when it's done. 
 	// How will the slave/slaveserverthread call this method?
-	
 	public void slaveDoneMessage(int id)
 	{  
 		System.out.println("SlaveThreadedServer: Slave " + id+ " is done!");
@@ -109,8 +103,17 @@ public class SlaveThreadedServer extends Thread
 				idleSlaves.add(t);
 			}
 				
-		}		
-		
+		}			
+	}
+	
+	public LinkedList<SlaveServerThread> getIdleSlaves() 
+	{
+		return idleSlaves;
+	}
+
+	public LinkedList<SlaveServerThread> getWorkingSlaves() 
+	{
+		return workingSlaves;
 	}
 }
 
