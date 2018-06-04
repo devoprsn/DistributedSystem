@@ -30,33 +30,72 @@ public class RedistributingThread extends Thread{
     	int numTasksLeft;              //number of tasks the slave with the longest total duration has left
     	int jobsToRedistribute;        //number of tasks to redistribute
     	SlaveServerThread idleSlave;   //slave that jobs will be redistributed to
+    	boolean emptyIdleSlaves = true;          //if idleSlaves is empty or not
+    	boolean emptyWorkingSlaves=true;
+    	int size = 0;                  //# of working slaves
     	
     	while(true)
     	{
+    		emptyIdleSlaves = true;
+    		emptyWorkingSlaves = true;
+    		
 		    	try {
-					sleep(50000);
+					sleep(5000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		    	
-		    	if(!idleSlaves.isEmpty())  // if no idle slaves, don't redistribute
+		    	
+		    	synchronized (idleSlaves)
+		    	{
+		    		if(!idleSlaves.isEmpty())
+		    		{
+		    			emptyIdleSlaves = false;
+		    		}
+		    		
+		    	}
+		    	
+		    	synchronized(workingSlaves)
+		    	{
+		    		if(!workingSlaves.isEmpty())
+		    		{
+		    			emptyWorkingSlaves = false;
+		    		}
+		    	}
+		    	
+		    	if(!emptyIdleSlaves)  //only redistribute if there is one or more idle slaves
 		    	{
 		    		System.out.println("RedistributingThread: idle slave (s) found");
-		    		
+		    		if(!emptyWorkingSlaves)
+		    		{
+		    			System.out.println("RedistributingThread: working slave (s) found");
+		    			
+		    		    synchronized(workingSlaves)
+		    		    {
 				    	maxWorkSlave = workingSlaves.get(0);  
+		    		    }
 				    	
 				    	maxTotalDuration = maxWorkSlave.getTotalDurationOfAllTasks(); //request slaveSlaveServerThread to send its total duration
 				    	
-				    	for(int i = 1; i < workingSlaves.size(); i++)
+				    	synchronized(workingSlaves)  //synchronized on whole loop so size of workingSlaves shouldn't change mid-loop
 				    	{
-				    		totalDuration = workingSlaves.get(i).getTotalDurationOfAllTasks();
-				    		if(totalDuration > maxTotalDuration)
-				    		{
-				    			maxTotalDuration = totalDuration;
-				    			maxWorkSlave = workingSlaves.get(i);
-				    		}
+				    		size = workingSlaves.size();
+				    	
+				    	
+							    	for(int i = 1; i < size; i++)
+							    	{
+							    		
+							    		totalDuration = workingSlaves.get(i).getTotalDurationOfAllTasks();
+							    		if(totalDuration > maxTotalDuration)
+							    		{
+							    			maxTotalDuration = totalDuration;
+							    			maxWorkSlave = workingSlaves.get(i);
+							    		}
+							    	}
+				    	
 				    	}
+				    	
 				    	
 				    	numTasksLeft = maxWorkSlave.getCountOfTasks();
 				    	
@@ -91,25 +130,25 @@ public class RedistributingThread extends Thread{
 				    	    	idleSlave.addJobWithDuration(duration);  // add the job with the duration to the idle slave
 				    	    }
 				    	    	
-				    		
 				    	    
-				    	    //synchronized()
-				    	    //{
-				    	    	idleSlaves.remove(idleSlave);
-				    	    	workingSlaves.add(idleSlave);
-				    	    //}
-				    	}
-				    	
+				    	    //now gives the job of removing and adding slaves to the slaveThreadedServer
+				    	    idleSlave.getMyThreadedServerBoss().idleToWorking();
+				    	    
+				    	    System.out.println("RedistributingThread: redistributed the jobs");
+				    	    
+				    	    
+				    	}//end if should redistribute or not
+		    		}//end if working slaves or not	
 	
-		    	}
-		    	      System.out.println("RedistributingThread: redistributed the jobs");
+		    	} //end if idle slaves or not
+		    	      
 		    	
-    	}
+    	}//end while(true)
     	
     	
-	}
+	}//end run()
 
-}
+}//end class
 
 
 

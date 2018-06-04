@@ -158,4 +158,10 @@ public class SlaveServerThread extends Thread{
 		
 		return 0;
 	}
+	
+//method added so redistributing thread can use a slaveserverthread to communicate with threadedserver to move around the slaves
+	public SlaveThreadedServer getMyThreadedServerBoss()
+	{
+		return myThreadedServerBoss;
+	}
 }
