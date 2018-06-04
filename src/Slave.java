@@ -17,7 +17,7 @@ public class Slave {
 			System.exit(1);
 		}
 		
-		IRandomValueGenerator rand = new RandomValueGenerator();
+		
 
 		int portNumber = Integer.parseInt(args[0]);
 		ServerSocket serverSocket = null;
@@ -37,14 +37,15 @@ public class Slave {
 					BufferedReader requestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) 
 		{
 			String msg;
-			//SlaveTaskThread taskThread = new SlaveTaskThread(tasks,clientSocket);
+			
 			SlaveTaskThread taskThread = new SlaveTaskThread(tasks,responseWriter);           
 			taskThread.start();
 			
+			//slave can receive different messages:
 			while ((msg = requestReader.readLine()) != null)
 			{			
-				if(msg.equals("Job")) {
-					Job job = new Job(rand);
+				if(msg.equals("Job")) {   //new job sent
+					Job job = new Job();
 					System.out.println("Slave: jobRequest- " + msg);//this worked!
 					
 	                synchronized(tasks)
@@ -52,10 +53,55 @@ public class Slave {
 	                	tasks.add(job);	
 	                }	
 				}
-				else if(msg.equals("Duration"))	{
-					responseWriter.println(duration(tasks));
+				
+				else if(msg.substring(0,6).equals("SetJob"))  //job with set duration has been sent
+				{
+					Job job = new Job(Integer.parseInt(msg.substring(6)));
+					System.out.println("Slave: jobRequest- " + msg);
+					
+					 synchronized(tasks)
+		                {
+		                	tasks.add(job);	
+		                }	
+				}
+				
+				else if(msg.equals("Duration"))	{  //return the duration
+					System.out.println("Slave: jobRequest- " + msg);
+					responseWriter.println("dur" + durationOfAll(tasks));
+					
+				}
+				
+				else if (msg.equals("Count")) //return how many task there are:
+				{
+					System.out.println("Slave: jobRequest- " + msg);
+					
+					Integer numTasks = 0;
+					
+					synchronized(tasks)
+					{
+						numTasks = tasks.size();
+					}
+					
+					responseWriter.println("cou"+numTasks);
+				}
+				
+				else //msg is "Remove", so remove last job from list of tasks and return the duration so can be redistributed
+				{
+					System.out.println("Slave: jobRequest- " + msg);
+					
+					int duration = 0;
+					synchronized(tasks)
+					{
+						duration = tasks.removeLast().getDuration();
+					}
+					
+					responseWriter.println("rem" + duration);
 				}
 			}
+			
+			
+			
+			
 			
 			taskThread.join();
 		} 
@@ -71,14 +117,17 @@ public class Slave {
 		
 	}
 	
-	public static int duration(LinkedList<Job> tasks)
+	
+	
+	
+	public static int durationOfAll(LinkedList<Job> tasks)
 	{
-		int seconds = 0;
+		int milliseconds = 0;
 		for(Job job : tasks)
 		{
-			seconds += job.getDuration();
+			milliseconds += job.getDuration();
 		}
 		
-		return seconds;
+		return milliseconds;
 	}
 }

@@ -33,7 +33,7 @@ public class Master
 	   } 
 	   catch (InterruptedException e)
 	   {
-			System.out.println("Error: ThreadedServers coudn't join.");
+			System.out.println("Error: Threads coudn't join.");
 			e.printStackTrace();
 	   }		
 	   //program ends

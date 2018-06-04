@@ -65,14 +65,90 @@ public class SlaveServerThread extends Thread{
 		System.out.println("Slave Thread "+id+" added job");
 	}
 	
-	public int getDuration()
+	
+	public void addJobWithDuration(int duration)
 	{
-		outputStream.println("Duration");
-		String msg;
+		outputStream.println("JobSet" + duration);
+		System.out.println("Slave Thread "+id+" added job with duration");
+		
+	}
+
+	//removes the job but returns its duration
+	public int removeJob()
+	{
+		outputStream.println("Remove");
+        String msg;
+		
 		try {
-			while((msg = requestReader.readLine()) != null)
+			while((msg = requestReader.readLine()) != null)  //now parse the slave's response
 			{
-				return Integer.parseInt(msg);
+				//check to see if the right message was received - begins with "rem" for remove
+				
+				if(msg.substring(0,3).equals("rem"))  
+				{
+					return Integer.parseInt(msg.substring(3));
+				}
+				
+				
+			}
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return 0;
+	}
+	
+	
+	
+	public int getCountOfTasks()
+	{
+		outputStream.println("Count");     //request slave to send the duration of all its tasks
+        String msg;
+		
+		try {
+			while((msg = requestReader.readLine()) != null)  //now parse the slave's response
+			{
+				//check to see if the right message was received - begins with "cou" for count
+				
+				if(msg.substring(0,3).equals("cou"))  
+				{
+					return Integer.parseInt(msg.substring(3));
+				}
+				
+				
+			}
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return 0;
+		
+	}
+	
+	
+	
+	public int getTotalDurationOfAllTasks()
+	{
+		
+		
+		outputStream.println("Duration");  //request slave to send the duration of all its tasks
+		String msg;
+		
+		try {
+			while((msg = requestReader.readLine()) != null)  //now parse the slave's response
+			{
+                //check to see if the right message was received - begins with "dur" for duration
+				
+				if(msg.substring(0,3).equals("dur"))  
+				{
+					return Integer.parseInt(msg.substring(3));
+				}
+				
+				
 			}
 		} 
 		catch (IOException e)
