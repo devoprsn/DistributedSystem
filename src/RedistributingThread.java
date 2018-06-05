@@ -26,6 +26,24 @@ public class RedistributingThread extends Thread{
     	 */
     	
     	System.out.println("Redistributing Thread initialized");
+         
+    	while(true)
+    	{
+    		try {
+				sleep(5000);
+			}
+	    	catch (InterruptedException e) 
+	    	{
+				e.printStackTrace();
+			}
+	    	
+    	redistributeTheJobs();
+    	}
+    	
+	}//end run()
+    
+    synchronized private void redistributeTheJobs()
+    {
     	SlaveServerThread maxWorkSlave;   //slave with the most time left to complete its tasks
     	int totalDuration, maxTotalDuration;  //time left for each slave to complete all their tasks
     	int numTasksLeft;              //number of tasks the slave with the longest total duration has left
@@ -35,18 +53,18 @@ public class RedistributingThread extends Thread{
     	boolean emptyWorkingSlaves=true;
     	int size = 0;                  //# of working slaves
     	
-    	while(true)
-    	{
+    	//while(true)
+    	//{
     		emptyIdleSlaves = true;
     		emptyWorkingSlaves = true;
     		
-		    	try {
+		    	/*try {
 					sleep(5000);
 				}
 		    	catch (InterruptedException e) 
 		    	{
 					e.printStackTrace();
-				}
+				}*/
 		    	
 		    	
 		    	synchronized (idleSlaves)
@@ -66,7 +84,7 @@ public class RedistributingThread extends Thread{
 		    		}
 		    	}
 		    	
-		    	if(!emptyIdleSlaves)  //only redistribute if there is one or more idle slaves
+		    	if(!emptyIdleSlaves)  //only redistribute if there is one or more idle slaves and working slaves
 		    	{
 		    		System.out.println("RedistributingThread: idle slave (s) found");
 		    		if(!emptyWorkingSlaves)
@@ -80,29 +98,32 @@ public class RedistributingThread extends Thread{
 				    	
 				    	maxTotalDuration = maxWorkSlave.getTotalDurationOfAllTasks(); //request slaveSlaveServerThread to send its total duration
 				    	
-				    	synchronized(workingSlaves)  //synchronized on whole loop so size of workingSlaves shouldn't change mid-loop
+				    	synchronized(workingSlaves)  //maybe synchronize on whole loop so size of workingSlaves shouldn't change mid-loop
 				    	{
-				    		size = workingSlaves.size();	    					    	
-				    	}
+						    		size = workingSlaves.size();	    					    	
+						    	
+						    	
+						    	SlaveServerThread slave;
+						    	for(int i = 1; i < size; i++)
+						    	{		
+						    		
+						    			slave = workingSlaves.get(i);
+						    		
+						    		totalDuration = slave.getTotalDurationOfAllTasks();
+						    		if(totalDuration > maxTotalDuration)
+						    		{
+						    			maxTotalDuration = totalDuration;
+						    			maxWorkSlave = slave;
+						    		}
+						    	}
 				    	
-				    	SlaveServerThread slave;
-				    	for(int i = 1; i < size; i++)
-				    	{		
-				    		synchronized(workingSlaves)
-				    		{
-				    			slave = workingSlaves.get(i);
-				    		}
-				    		totalDuration = slave.getTotalDurationOfAllTasks();
-				    		if(totalDuration > maxTotalDuration)
-				    		{
-				    			maxTotalDuration = totalDuration;
-				    			maxWorkSlave = slave;
-				    		}
-				    	}
-				    					    	
+				    	
+		    		   }
+				    	
+				    	
 				    	numTasksLeft = maxWorkSlave.getCountOfTasks();
 				    	
-				    	if (numTasksLeft>=3) 
+				    	if (numTasksLeft>=2) 
 				    	{
 				    		//so redistribute:				    		
 				    		System.out.println("RedistributingThread: need to redistribute");
@@ -128,10 +149,11 @@ public class RedistributingThread extends Thread{
 				    	    {
 				    	    	int duration = maxWorkSlave.removeJob(); //remove job and get the duration of the job being removed				    	    	
 				    	    	idleSlave.addJobWithDuration(duration);  // add the job with the duration to the idle slave
+				    	    	i++;
 				    	    }
 				    	    	
 				    	    
-				    	    //now gives the job of removing and adding slaves to the slaveThreadedServer
+				    	    //now gives the job of adding slave to working list to the slaveThreadedServer
 				    	    idleSlave.getMyThreadedServerBoss().idleToWorking(idleSlave);
 				    	    
 				    	    System.out.println("RedistributingThread: redistributed the jobs");
@@ -143,10 +165,9 @@ public class RedistributingThread extends Thread{
 		    	} //end if idle slaves or not
 		    	      
 		    	
-    	}//end while(true)
+    	//}//end while(true)
     	
-    	
-	}//end run()
+    }
 
 }//end class
 

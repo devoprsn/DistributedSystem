@@ -9,8 +9,8 @@ public class Master
 	   
 	   //String[] iPAddresses = {"127.0.0.1", "127.0.0.1","127.0.0.1","127.0.0.1"};
 	   //int [] portNumbers = {40121,40123,40124,40125};
-             String[] iPAddresses = {"127.0.0.1", "127.0.0.1"};
-             int [] portNumbers = {40121,40123};
+             String[] iPAddresses = {"127.0.0.1", "127.0.0.1","127.0.0.1"};
+             int [] portNumbers = {40121,40123,40124};
 	   
 	   System.out.println("Master is running!");
 	   

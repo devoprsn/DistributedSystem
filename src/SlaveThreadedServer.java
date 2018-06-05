@@ -87,7 +87,7 @@ public class SlaveThreadedServer extends Thread
 				    	
 				    	System.out.println("Sent job to thread "+idleSlave.getID());
 				    	//workingSlaves.add(idleSlaves.removeFirst());
-				    	idleToWorking(idleSlave);         //calls synchronized method to move slave from idleSlaves to workingSlaves
+				    	idleToWorking(idleSlave);         //calls synchronized method to move slave to workingSlaves
             	 }	            	 
 			    else
 			    {
@@ -144,16 +144,19 @@ public class SlaveThreadedServer extends Thread
 	}
 	
 	
-	//this method moves a slave from idle slaves to working slaves
+	//this method moves a slave to working slaves
 	synchronized public void idleToWorking(SlaveServerThread idleSlave)
-	{		
+	{	
 		workingSlaves.add(idleSlave);
+		System.out.println("SlaveThreadedServer: moved slave to workingSlaves!");
 	}
 	
 	synchronized private void workingToIdle(SlaveServerThread doneSlave)
 	{
 		workingSlaves.remove(doneSlave);
 		idleSlaves.add(doneSlave);
+		
+		System.out.println("SlaveThreadedServer: moved slave from working to idleSlaves!");
 	}
 		
     
