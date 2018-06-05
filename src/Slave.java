@@ -52,25 +52,21 @@ public class Slave {
 	                {
 	                	tasks.add(job);	
 	                }	
-				}
-				
+				}				
 				else if(msg.substring(0,6).equals("SetJob"))  //job with set duration has been sent
 				{
 					Job job = new Job(Integer.parseInt(msg.substring(6)));
 					System.out.println("Slave: jobRequest- " + msg);
 					
 					 synchronized(tasks)
-		                {
-		                	tasks.add(job);	
-		                }	
-				}
-				
+		             {
+		                tasks.add(job);	
+		             }	
+				}				
 				else if(msg.equals("Duration"))	{  //return the duration
 					System.out.println("Slave: jobRequest- " + msg);
-					responseWriter.println("dur" + durationOfAll(tasks));
-					
-				}
-				
+					responseWriter.println("dur" + durationOfAll(tasks));					
+				}			
 				else if (msg.equals("Count")) //return how many task there are:
 				{
 					System.out.println("Slave: jobRequest- " + msg);
@@ -85,7 +81,7 @@ public class Slave {
 					responseWriter.println("cou"+numTasks);
 				}
 				
-				else //msg is "Remove", so remove last job from list of tasks and return the duration so can be redistributed
+				else if(msg.equals("Remove")) //remove last job from list of tasks and return the duration so can be redistributed
 				{
 					System.out.println("Slave: jobRequest- " + msg);
 					
@@ -98,11 +94,7 @@ public class Slave {
 					responseWriter.println("rem" + duration);
 				}
 			}
-			
-			
-			
-			
-			
+	
 			taskThread.join();
 		} 
 		catch (IOException e) {
@@ -116,9 +108,6 @@ public class Slave {
 		}		
 		
 	}
-	
-	
-	
 	
 	public static int durationOfAll(LinkedList<Job> tasks)
 	{

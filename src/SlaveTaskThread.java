@@ -54,10 +54,7 @@ public class SlaveTaskThread extends Thread{
 					e.printStackTrace();
 				}
 				
-			}	
-			
-			
-			
+			}				
 		}
 	}
 }

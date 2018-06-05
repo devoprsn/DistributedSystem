@@ -4,13 +4,11 @@ import java.util.LinkedList;
 public class SlaveThreadedServer extends Thread
 {	
 	private LinkedList<String> jobs;
-	String[] IPAddresses;
-	int[] portNumbers;
+	private String[] IPAddresses;
+	private int[] portNumbers;
 	private LinkedList<SlaveServerThread> idleSlaves; 
 	private LinkedList<SlaveServerThread> workingSlaves;
 	private ArrayList<SlaveServerThread> slaveThreads;
-	
-//	private RedistributingThread redistributeThread;
 	
    public SlaveThreadedServer(LinkedList<String> jobs, String[] IPAddresses, int[] portNumbers)
    {
@@ -62,7 +60,7 @@ public class SlaveThreadedServer extends Thread
             {			  
 				if(!jobs.isEmpty())
 				{
-                    emptyJobs=false;
+                    emptyJobs = false;
                     job = jobs.removeFirst();
                 }
 			
@@ -80,37 +78,33 @@ public class SlaveThreadedServer extends Thread
 					 
             	 if(!emptyIdleSlaves)
             	 {
-            		       synchronized(idleSlaves)
-            		       {
-					    	idleSlave = idleSlaves.getFirst();	
-            		       }
-					    	
-					    	
-					    	idleSlave.addJob(job);
-							
-					    	
-					    	System.out.println("Sent job to thread "+idleSlave.getID());
-					    	//workingSlaves.add(idleSlaves.removeFirst());
-					    	idleToWorking();         //calls synchronized method to move slave from idleSlaves to workingSlaves
-				}	
-            	 
-            	 
+        		       synchronized(idleSlaves)
+        		       {
+        		    	   idleSlave = idleSlaves.removeFirst();	
+        		       }				    	
+				    	
+				    	idleSlave.addJob(job);						
+				    	
+				    	System.out.println("Sent job to thread "+idleSlave.getID());
+				    	//workingSlaves.add(idleSlaves.removeFirst());
+				    	idleToWorking(idleSlave);         //calls synchronized method to move slave from idleSlaves to workingSlaves
+            	 }	            	 
 			    else
 			    {
 			    	synchronized(workingSlaves)
 			    	{
-			    	  firstWorkingSlave = workingSlaves.removeFirst();
+			    		firstWorkingSlave = workingSlaves.removeFirst();
 			    	}
 			    	
-			    		//if all slaves are working, give to 1st working slave and move it to the last position in working slaves			    		
-			    		firstWorkingSlave.addJob(job);					    		
+		    		//if all slaves are working, give to 1st working slave and move it to the last position in working slaves			    		
+		    		firstWorkingSlave.addJob(job);					    		
 						
 			    	System.out.println("Sent job to thread "+firstWorkingSlave.getID());
 			    	
 			    	//move working slave to back of line of working slaves
 			    	synchronized(workingSlaves)
 			    	{
-			    	workingSlaves.addLast(firstWorkingSlave);
+			    		workingSlaves.addLast(firstWorkingSlave);
 			    	}
 			    }												    				
 			
@@ -151,10 +145,9 @@ public class SlaveThreadedServer extends Thread
 	
 	
 	//this method moves a slave from idle slaves to working slaves
-	synchronized public void idleToWorking()
-	{
-		
-		workingSlaves.add(idleSlaves.removeFirst());
+	synchronized public void idleToWorking(SlaveServerThread idleSlave)
+	{		
+		workingSlaves.add(idleSlave);
 	}
 	
 	synchronized private void workingToIdle(SlaveServerThread doneSlave)

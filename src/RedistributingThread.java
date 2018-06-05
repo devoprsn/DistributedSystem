@@ -25,6 +25,7 @@ public class RedistributingThread extends Thread{
     	 * if the maxJobsSlave has at least a certain # of jobs it gives 1/2 of those jobs to the 1st (or only) idle slave.
     	 */
     	
+    	System.out.println("Redistributing Thread initialized");
     	SlaveServerThread maxWorkSlave;   //slave with the most time left to complete its tasks
     	int totalDuration, maxTotalDuration;  //time left for each slave to complete all their tasks
     	int numTasksLeft;              //number of tasks the slave with the longest total duration has left
@@ -41,8 +42,9 @@ public class RedistributingThread extends Thread{
     		
 		    	try {
 					sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				}
+		    	catch (InterruptedException e) 
+		    	{
 					e.printStackTrace();
 				}
 		    	
@@ -73,71 +75,69 @@ public class RedistributingThread extends Thread{
 		    			
 		    		    synchronized(workingSlaves)
 		    		    {
-				    	maxWorkSlave = workingSlaves.get(0);  
+		    		    	maxWorkSlave = workingSlaves.get(0);  
 		    		    }
 				    	
 				    	maxTotalDuration = maxWorkSlave.getTotalDurationOfAllTasks(); //request slaveSlaveServerThread to send its total duration
 				    	
 				    	synchronized(workingSlaves)  //synchronized on whole loop so size of workingSlaves shouldn't change mid-loop
 				    	{
-				    		size = workingSlaves.size();
-				    	
-				    	
-							    	for(int i = 1; i < size; i++)
-							    	{
-							    		
-							    		totalDuration = workingSlaves.get(i).getTotalDurationOfAllTasks();
-							    		if(totalDuration > maxTotalDuration)
-							    		{
-							    			maxTotalDuration = totalDuration;
-							    			maxWorkSlave = workingSlaves.get(i);
-							    		}
-							    	}
-				    	
+				    		size = workingSlaves.size();	    					    	
 				    	}
 				    	
-				    	
+				    	SlaveServerThread slave;
+				    	for(int i = 1; i < size; i++)
+				    	{		
+				    		synchronized(workingSlaves)
+				    		{
+				    			slave = workingSlaves.get(i);
+				    		}
+				    		totalDuration = slave.getTotalDurationOfAllTasks();
+				    		if(totalDuration > maxTotalDuration)
+				    		{
+				    			maxTotalDuration = totalDuration;
+				    			maxWorkSlave = slave;
+				    		}
+				    	}
+				    					    	
 				    	numTasksLeft = maxWorkSlave.getCountOfTasks();
 				    	
 				    	if (numTasksLeft>=3) 
 				    	{
-				    		//so redistribute:
-				    		
+				    		//so redistribute:				    		
 				    		System.out.println("RedistributingThread: need to redistribute");
 				    		
-				    		if (numTasksLeft%2 ==0)  //even amount
+				    		if (numTasksLeft%2 == 0)  //even amount
 				    		{
 				    			jobsToRedistribute = numTasksLeft/2;
 				    		}
 				    		else  //odd amount
 				    		{
 				    			jobsToRedistribute = (numTasksLeft-1)/2;
-				    		}
-				    		
+				    		}		    		
 				    	    
 				    	    
 				    	    synchronized(idleSlaves)
 				    	    {
-				    	    	idleSlave = idleSlaves.getFirst();
+				    	    	idleSlave = idleSlaves.removeFirst();
 				    	    }
 				    	    
 				    	    int i = 0;
 				    	    
 				    	    while(i<jobsToRedistribute)
 				    	    {
-				    	    	int duration = maxWorkSlave.removeJob(); //remove job and get the duration of the job being removed
-				    	    	
+				    	    	int duration = maxWorkSlave.removeJob(); //remove job and get the duration of the job being removed				    	    	
 				    	    	idleSlave.addJobWithDuration(duration);  // add the job with the duration to the idle slave
 				    	    }
 				    	    	
 				    	    
 				    	    //now gives the job of removing and adding slaves to the slaveThreadedServer
-				    	    idleSlave.getMyThreadedServerBoss().idleToWorking();
+				    	    idleSlave.getMyThreadedServerBoss().idleToWorking(idleSlave);
 				    	    
 				    	    System.out.println("RedistributingThread: redistributed the jobs");
-				    	    
-				    	    
+				    	    	    	    
 				    	}//end if should redistribute or not
+				    	
 		    		}//end if working slaves or not	
 	
 		    	} //end if idle slaves or not
