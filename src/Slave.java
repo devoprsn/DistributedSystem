@@ -15,9 +15,7 @@ public class Slave {
 		if (args.length != 1) {
 			System.err.println("Usage: java EchoServer <port number>");
 			System.exit(1);
-		}
-		
-		
+		}	
 
 		int portNumber = Integer.parseInt(args[0]);
 		ServerSocket serverSocket = null;
@@ -53,7 +51,7 @@ public class Slave {
 	                	tasks.add(job);	
 	                }	
 				}				
-				else if(msg.substring(0,6).equals("SetJob"))  //job with set duration has been sent
+				else if(msg.length() >= 6 && msg.substring(0,6).equals("SetJob"))  //job with set duration has been sent
 				{
 					Job job = new Job(Integer.parseInt(msg.substring(6)));
 					System.out.println("Slave: jobRequest- " + msg);

@@ -7,15 +7,17 @@ public class SlaveServerThread extends Thread{
 	private int id;
 	private String IPAddress;
 	private int portNumber;
+	private RedistributingObject redistributingObject;
 	private SlaveThreadedServer myThreadedServerBoss;
 	private PrintWriter outputStream;
 	BufferedReader requestReader;
 	
-	public SlaveServerThread(String IPAddress, int portNumber, int id, SlaveThreadedServer parent)
+	public SlaveServerThread(String IPAddress, int portNumber, int id, RedistributingObject redistributingObject, SlaveThreadedServer parent)
 	{
 		this.id = id;
 		this.IPAddress = IPAddress;
 		this.portNumber = portNumber;	
+		this.redistributingObject = redistributingObject;
 		this.myThreadedServerBoss = parent;
 	}
 	
@@ -41,6 +43,19 @@ public class SlaveServerThread extends Thread{
 					myThreadedServerBoss.slaveDoneMessage(id);
 					System.out.println("SlaveServerThread" + id + ": notified threadedServer that slave is done!");
 				}
+				else if(msg.substring(0,3).equals("rem"))
+				{
+					redistributingObject.setDurationOfRemovedTask(Integer.parseInt(msg.substring(3)));
+				}
+				else if(msg.substring(0,3).equals("cou"))
+				{
+					redistributingObject.setNumTasksLeft(Integer.parseInt(msg.substring(3)));
+				}
+				else if(msg.substring(0,3).equals("dur"))
+				{
+					redistributingObject.setTotalDuration(Integer.parseInt(msg.substring(3)));
+				}
+				
 			}
 		}
 		catch(UnknownHostException e)
@@ -69,99 +84,40 @@ public class SlaveServerThread extends Thread{
 	public void addJobWithDuration(int duration)
 	{
 		outputStream.println("JobSet" + duration);
-		System.out.println("Slave Thread "+id+" added job with duration");
+		System.out.println("Slave Thread " + id + " added job with duration");
 		
 	}
 
 	//removes the job but returns its duration
-	public int removeJob()
+	public void removeJob()
 	{
 		outputStream.println("Remove");
-        String msg;
-		
-		try {
-			while((msg = requestReader.readLine()) != null)  //now parse the slave's response
-			{
-				//check to see if the right message was received - begins with "rem" for remove
-				
-				if(msg.substring(0,3).equals("rem"))  
-				{
-					return Integer.parseInt(msg.substring(3));
-				}
-				
-				
-			}
-		} 
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return 0;
+		System.out.println("SlaveServerThread: sent remove command to Slave");
 	}
 	
 	
 	
-	public int getCountOfTasks()
+	public void getCountOfTasks()
 	{
 		outputStream.println("Count");     //request slave to send the duration of all its tasks
-        String msg;
+		System.out.println("SlaveServerThread: sent count command to Slave");
 		
-		try {
-			while((msg = requestReader.readLine()) != null)  //now parse the slave's response
-			{
-				//check to see if the right message was received - begins with "cou" for count
-				
-				if(msg.substring(0,3).equals("cou"))  
-				{
-					return Integer.parseInt(msg.substring(3));
-				}
-				
-				
-			}
-		} 
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return 0;
-		
-	}
+	}	
 	
-	
-	
-	public int getTotalDurationOfAllTasks()
-	{
-		
-		
+	public void getTotalDurationOfAllTasks()
+	{		
 		outputStream.println("Duration");  //request slave to send the duration of all its tasks
-		String msg;
-		
-		try {
-			while((msg = requestReader.readLine()) != null)  //now parse the slave's response
-			{
-                //check to see if the right message was received - begins with "dur" for duration
-				
-				if(msg.substring(0,3).equals("dur"))  
-				{
-					return Integer.parseInt(msg.substring(3));
-				}
-				
-				
-			}
-		} 
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return 0;
+		System.out.println("SlaveServerThread: sent duration command to Slave");
 	}
 	
-//method added so redistributing thread can use a slaveserverthread to communicate with threadedserver to move around the slaves
+	//method added so redistributing thread can use a slaveserverthread to communicate with threadedserver to move around the slaves
 	public SlaveThreadedServer getMyThreadedServerBoss()
 	{
 		return myThreadedServerBoss;
+	}
+	
+	public RedistributingObject getRedistributingObject()
+	{
+		return redistributingObject;
 	}
 }

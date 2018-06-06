@@ -17,7 +17,7 @@ public class SlaveThreadedServer extends Thread
 	  this.portNumbers = portNumbers;
 	  idleSlaves = new LinkedList<SlaveServerThread>();
 	  workingSlaves = new LinkedList<SlaveServerThread>();  
-	  slaveThreads = new ArrayList<SlaveServerThread>();	  	  
+	  slaveThreads = new ArrayList<SlaveServerThread>();		  
    }   
 
 	@Override
@@ -25,11 +25,12 @@ public class SlaveThreadedServer extends Thread
 	{
 		System.out.println("SlaveThreadedServer initialized"); //println for testing
 		
-		 final int THREADS = IPAddresses.length;	
-			
+		final int THREADS = IPAddresses.length;	
+		RedistributingObject redistributingObject = new RedistributingObject();
+		
 		for (int i = 0; i < THREADS; i++)
 		{
-			slaveThreads.add(new SlaveServerThread(IPAddresses[i], portNumbers[i], i, this));
+			slaveThreads.add(new SlaveServerThread(IPAddresses[i], portNumbers[i], i, redistributingObject, this));
 		}
 		for (Thread t : slaveThreads)
 		{
