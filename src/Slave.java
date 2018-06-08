@@ -10,6 +10,8 @@ import java.util.LinkedList;
 
 public class Slave {
 	
+	private static LinkedList<Job> tasks;
+	
 	public static void main(String[] args)
 	{
 		if (args.length != 1) {
@@ -28,7 +30,7 @@ public class Slave {
 		}
 
 		System.out.println("Slave initialized"); //println for testing	
-		LinkedList<Job> tasks = new LinkedList<Job>();	
+		tasks = new LinkedList<Job>();	
 		
 		try (Socket clientSocket = serverSocket.accept();
 					PrintWriter responseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -44,7 +46,7 @@ public class Slave {
 			{			
 				if(msg.equals("Job")) {   //new job sent
 					Job job = new Job();
-					System.out.println("Slave: jobRequest- " + msg);//this worked!
+					System.out.println("Slave: jobRequest- " + msg);
 					
 	                synchronized(tasks)
 	                {
@@ -63,7 +65,7 @@ public class Slave {
 				}				
 				else if(msg.equals("Duration"))	{  //return the duration
 					System.out.println("Slave: jobRequest- " + msg);
-					responseWriter.println("dur" + durationOfAll(tasks));					
+					responseWriter.println("dur" + durationOfAll());					
 				}			
 				else if (msg.equals("Count")) //return how many task there are:
 				{
@@ -107,13 +109,16 @@ public class Slave {
 		
 	}
 	
-	public static int durationOfAll(LinkedList<Job> tasks)
+	public static int durationOfAll()
 	{
 		int milliseconds = 0;
-		for(Job job : tasks)
+		synchronized(tasks)
 		{
-			milliseconds += job.getDuration();
-		}
+			for(Job job : tasks)
+			{
+				milliseconds += job.getDuration();
+			}
+		}		
 		
 		return milliseconds;
 	}

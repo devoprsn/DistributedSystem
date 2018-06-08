@@ -1,8 +1,8 @@
 
 public class RedistributingObject {
 
-	private int totalDuration;
-	private int numTasksLeft;
+	private int totalDuration; //duration for all tasks in a Slave
+	private int numTasksLeft; //number of tasks in a Slave 
 	private int durationOfRemovedTask;
 	
 	public RedistributingObject()
@@ -13,7 +13,7 @@ public class RedistributingObject {
 	}
 
 	public int getTotalDuration() {
-		return totalDuration;
+		return (totalDuration / 1000);
 	}
 
 	public void setTotalDuration(int totalDuration) {
@@ -29,7 +29,7 @@ public class RedistributingObject {
 	}
 
 	public int getDurationOfRemovedTask() {
-		return durationOfRemovedTask;
+		return (durationOfRemovedTask / 1000);
 	}
 
 	public void setDurationOfRemovedTask(int durationOfRemovedTask) {

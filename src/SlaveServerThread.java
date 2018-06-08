@@ -41,19 +41,28 @@ public class SlaveServerThread extends Thread{
 				if(msg.equals("Done"))
 				{
 					myThreadedServerBoss.slaveDoneMessage(id);
-					System.out.println("SlaveServerThread" + id + ": notified threadedServer that slave is done!");
+					System.out.println("SlaveServerThread " + id + ": notified threadedServer that slave is done!");
 				}
 				else if(msg.substring(0,3).equals("rem"))
 				{
-					redistributingObject.setDurationOfRemovedTask(Integer.parseInt(msg.substring(3)));
+					synchronized(redistributingObject)
+					{
+						redistributingObject.setDurationOfRemovedTask(Integer.parseInt(msg.substring(3)));
+					}					
 				}
 				else if(msg.substring(0,3).equals("cou"))
 				{
-					redistributingObject.setNumTasksLeft(Integer.parseInt(msg.substring(3)));
+					synchronized(redistributingObject)
+					{
+						redistributingObject.setNumTasksLeft(Integer.parseInt(msg.substring(3)));
+					}					
 				}
 				else if(msg.substring(0,3).equals("dur"))
 				{
-					redistributingObject.setTotalDuration(Integer.parseInt(msg.substring(3)));
+					synchronized(redistributingObject)
+					{
+						redistributingObject.setTotalDuration(Integer.parseInt(msg.substring(3)));
+					}					
 				}
 				
 			}
@@ -92,7 +101,7 @@ public class SlaveServerThread extends Thread{
 	public void removeJob()
 	{
 		outputStream.println("Remove");
-		System.out.println("SlaveServerThread: sent remove command to Slave");
+		System.out.println("SlaveServerThread " + id + ": sent remove command to Slave");
 	}
 	
 	
@@ -100,14 +109,14 @@ public class SlaveServerThread extends Thread{
 	public void getCountOfTasks()
 	{
 		outputStream.println("Count");     //request slave to send the duration of all its tasks
-		System.out.println("SlaveServerThread: sent count command to Slave");
+		System.out.println("SlaveServerThread " + id + ": sent count command to Slave");
 		
 	}	
 	
 	public void getTotalDurationOfAllTasks()
 	{		
 		outputStream.println("Duration");  //request slave to send the duration of all its tasks
-		System.out.println("SlaveServerThread: sent duration command to Slave");
+		System.out.println("SlaveServerThread " + id + ": sent duration command to Slave");
 	}
 	
 	//method added so redistributing thread can use a slaveserverthread to communicate with threadedserver to move around the slaves

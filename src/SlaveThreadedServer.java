@@ -9,6 +9,7 @@ public class SlaveThreadedServer extends Thread
 	private LinkedList<SlaveServerThread> idleSlaves; 
 	private LinkedList<SlaveServerThread> workingSlaves;
 	private ArrayList<SlaveServerThread> slaveThreads;
+//	private RedistributingObject redistributingObject;
 	
    public SlaveThreadedServer(LinkedList<String> jobs, String[] IPAddresses, int[] portNumbers)
    {
@@ -17,7 +18,8 @@ public class SlaveThreadedServer extends Thread
 	  this.portNumbers = portNumbers;
 	  idleSlaves = new LinkedList<SlaveServerThread>();
 	  workingSlaves = new LinkedList<SlaveServerThread>();  
-	  slaveThreads = new ArrayList<SlaveServerThread>();		  
+	  slaveThreads = new ArrayList<SlaveServerThread>();	
+//	  this.redistributingObject = new RedistributingObject();
    }   
 
 	@Override
@@ -26,11 +28,10 @@ public class SlaveThreadedServer extends Thread
 		System.out.println("SlaveThreadedServer initialized"); //println for testing
 		
 		final int THREADS = IPAddresses.length;	
-		RedistributingObject redistributingObject = new RedistributingObject();
-		
+				
 		for (int i = 0; i < THREADS; i++)
 		{
-			slaveThreads.add(new SlaveServerThread(IPAddresses[i], portNumbers[i], i, redistributingObject, this));
+			slaveThreads.add(new SlaveServerThread(IPAddresses[i], portNumbers[i], i, new RedistributingObject(), this));
 		}
 		for (Thread t : slaveThreads)
 		{
@@ -42,12 +43,12 @@ public class SlaveThreadedServer extends Thread
 		//all slaves start off as idleSlaves
 		synchronized(idleSlaves)
 		{
-		idleSlaves.addAll(slaveThreads);
+			idleSlaves.addAll(slaveThreads);
 		}
 			
-		String job=null;
-		boolean emptyJobs= true; //jobs are empty or not
-		boolean emptyIdleSlaves=true; //idleSlaves empty or not
+		String job = null;
+		boolean emptyJobs = true; //jobs are empty or not
+		boolean emptyIdleSlaves = true; //idleSlaves empty or not
 		SlaveServerThread idleSlave; //to reference an idle slave
 		SlaveServerThread firstWorkingSlave; //to reference a working slave
 		
@@ -84,12 +85,19 @@ public class SlaveThreadedServer extends Thread
         		    	   idleSlave = idleSlaves.removeFirst();	
         		       }				    	
 				    	
-				    	idleSlave.addJob(job);						
-				    	
+				    	idleSlave.addJob(job);									    	
 				    	System.out.println("Sent job to thread "+idleSlave.getID());
-				    	//workingSlaves.add(idleSlaves.removeFirst());
-				    	idleToWorking(idleSlave);         //calls synchronized method to move slave to workingSlaves
-            	 }	            	 
+				    	
+				    	synchronized(workingSlaves)
+				    	{
+				    		workingSlaves.add(idleSlave); 
+				    	}				    	        
+				    	            	 
+//	            	 synchronized(workingSlaves)
+//	            	 {
+//	            		 workingSlaves.add(idleSlave);	            	 
+//	            	 }
+            	 }
 			    else
 			    {
 			    	synchronized(workingSlaves)
@@ -120,15 +128,22 @@ public class SlaveThreadedServer extends Thread
 	// How will the slave/slaveserverthread call this method?
 	public void slaveDoneMessage(int id)
 	{  
-		System.out.println("SlaveThreadedServer: Slave " + id+ " is done!");
+		System.out.println("SlaveThreadedServer: Slave " + id + " is done!");
 		
 		for (SlaveServerThread t: slaveThreads)
 		{
 			if (t.getId() == id)
 			{
-				//workingSlaves.remove(t);
-				//idleSlaves.add(t);
-				workingToIdle(t); //move slave from working to idle
+				synchronized(workingSlaves)
+				{
+					workingSlaves.remove(t);
+				}
+				synchronized(idleSlaves)
+				{
+					idleSlaves.add(t);
+				}				
+				System.out.println("SlaveThreadedServer: moved slave from working to idleSlaves!");
+//				workingToIdle(t); //move slave from working to idle
 			}
 				
 		}			
@@ -146,20 +161,19 @@ public class SlaveThreadedServer extends Thread
 	
 	
 	//this method moves a slave to working slaves
-	synchronized public void idleToWorking(SlaveServerThread idleSlave)
-	{	
-		workingSlaves.add(idleSlave);
-		System.out.println("SlaveThreadedServer: moved slave to workingSlaves!");
-	}
+//	synchronized public void idleToWorking(SlaveServerThread idleSlave)
+//	{	
+//		workingSlaves.add(idleSlave);
+//		System.out.println("SlaveThreadedServer: moved slave to workingSlaves!");
+//	}
 	
-	synchronized private void workingToIdle(SlaveServerThread doneSlave)
-	{
-		workingSlaves.remove(doneSlave);
-		idleSlaves.add(doneSlave);
-		
-		System.out.println("SlaveThreadedServer: moved slave from working to idleSlaves!");
-	}
-		
+//	synchronized private void workingToIdle(SlaveServerThread doneSlave)
+//	{
+//		workingSlaves.remove(doneSlave);
+//		idleSlaves.add(doneSlave);
+//		
+//		System.out.println("SlaveThreadedServer: moved slave from working to idleSlaves!");
+//	}
     
 }
 

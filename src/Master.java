@@ -19,6 +19,8 @@ public class Master
 	   Thread clientThreadedServer = new ClientThreadedServer(30121, jobs);  //clients
 	   clientThreadedServer.start();	
 	   
+//	   RedistributingObject redistributingObject = new RedistributingObject();
+	   
 	   SlaveThreadedServer slaveThreadedServer = new SlaveThreadedServer(jobs, iPAddresses, portNumbers);
 	   slaveThreadedServer.start();
 	   
