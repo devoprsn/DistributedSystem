@@ -80,17 +80,24 @@ public class RedistributingThread extends Thread{
 	    		    	maxWorkSlave = workingSlaves.get(0);  
 	    		    }
 	    		    
-	    		    maxWorkSlave.getTotalDurationOfAllTasks(); //request slaveSlaveServerThread to send its total duration
 	    		    
+	    		    //request slaveSlaveServerThread to ask slave for totalDuration of all tasks, then slaveServerThread sets the value in the redistributingObject
+	    		    maxWorkSlave.getTotalDurationOfAllTasks();  
+	    		    
+	    		    //server thread should wait until value is updated
 	    		    while(maxWorkSlave.getRedistributingObject().getTotalDuration() == -1) {}
+	    		    
 	    		    maxTotalDuration = maxWorkSlave.getRedistributingObject().getTotalDuration();
+	    		    
 	    		    System.out.println("RedistributingThread: Max total duration for thread " + maxWorkSlave.getID()
 	    			+ " = " + maxTotalDuration + " seconds");
+	    		    
+	    		    //now reset totalDuration to -1, prior to next read, so no stale value is read
 	    		    maxWorkSlave.getRedistributingObject().setTotalDuration(-1);
 			    	
-	    		    maxTotalDuration = 0;
+	    		   // maxTotalDuration = 0; ///why?
 
-    		    	synchronized(workingSlaves)  //maybe synchronize on whole loop so size of workingSlaves shouldn't change mid-loop
+    		    	synchronized(workingSlaves)  //synchronize on whole loop so size of workingSlaves shouldn't change mid-loop
 			    	{
 					    size = workingSlaves.size();	    					    					    	
 					    	
@@ -100,7 +107,11 @@ public class RedistributingThread extends Thread{
 				    		slave = workingSlaves.get(i);
 				    		
 				    		slave.getTotalDurationOfAllTasks();
+				    		
+				    		//slave should wait until value is updated
 				    		while(slave.getRedistributingObject().getTotalDuration() == -1) {}
+				    		
+				    		//
 				    		totalDuration = slave.getRedistributingObject().getTotalDuration();
 				    		System.out.println("RedistributingThread: Total duration left for thread " + slave.getID()
 			    			+ " = " + (totalDuration / 1000)  + " seconds");
@@ -113,11 +124,19 @@ public class RedistributingThread extends Thread{
 	
 				    	}	
 
-				    	System.out.println("MaxWorkSlave is Slave " + maxWorkSlave.getID());
+				    	
 	    		   }  	
-			    				    	
+			    	
+    		    	System.out.println("MaxWorkSlave is Slave " + maxWorkSlave.getID());
+    		    	
+    		    	//got our slave with longest time until finished all tasks, now count how many tasks he has left
+    		    	
+    		    	////request slaveSlaveServerThread to ask slave for count of all tasks, then slaveServerThread sets the value in the redistributingObject
 			    	maxWorkSlave.getCountOfTasks();
+			    	
+			    	//slave should wait until value is updated
 			    	while(maxWorkSlave.getRedistributingObject().getNumTasksLeft() == -1) {}
+			    	
 			    	numTasksLeft = maxWorkSlave.getRedistributingObject().getNumTasksLeft();
 			    	System.out.println("RedistributingThread: Num tasks left for thread " + maxWorkSlave.getID()
 			    			+ " = " + numTasksLeft);
@@ -126,9 +145,20 @@ public class RedistributingThread extends Thread{
 			    	
 			    	if (numTasksLeft>=2) 
 			    	{
-			    		//so redistribute:				    		
+			    		//so redistribute:	
+			    		
+			    		
 			    		System.out.println("RedistributingThread: need to redistribute");
 			    		
+			    		//get the first (or only) idle slave and remove it from the list of idleSlaves:
+			    		
+			    		synchronized(idleSlaves)
+			    		{
+			    			idleSlave = idleSlaves.removeFirst();
+			    		}
+			    		
+			    		
+			    		  //now decide how to give away the jobs
 			    		if (numTasksLeft%2 == 0)  //even amount
 			    		{
 			    			jobsToRedistribute = numTasksLeft/2;
@@ -142,9 +172,12 @@ public class RedistributingThread extends Thread{
 		    	    
 			    	    while(i<jobsToRedistribute)
 			    	    {
-			    	    	maxWorkSlave.removeJob(); //remove job and get the duration of the job being removed				    	    	
+			    	    	////removes job and commands slave to send duration of removed task. slaveServerThread sets the value in the redistributingObject
+			    	    	maxWorkSlave.removeJob(); 				    	    	
 			    	    	while(maxWorkSlave.getRedistributingObject().getDurationOfRemovedTask() == -1) {}
+			    	    	
 			    	    	int duration = maxWorkSlave.getRedistributingObject().getDurationOfRemovedTask();
+			    	    	
 			    	    	System.out.println("RedistributingThread: Duration of removed task for thread " 
 			    	    	+ maxWorkSlave.getID() + " = " + duration + " seconds");
 			    	    	maxWorkSlave.getRedistributingObject().setDurationOfRemovedTask(-1);
@@ -153,7 +186,7 @@ public class RedistributingThread extends Thread{
 			    	    	i++;
 			    	    }		    	    	
 			    	    
-			    	    //now gives the job of adding slave to working list to the slaveThreadedServer
+			    	    //now add the idleSlave to the list of workingSlaves
 			    	    synchronized(workingSlaves)
 				    	{
 				    		workingSlaves.add(idleSlave); 

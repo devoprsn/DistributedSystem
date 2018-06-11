@@ -27,12 +27,14 @@ public class SlaveThreadedServer extends Thread
 	{
 		System.out.println("SlaveThreadedServer initialized"); //println for testing
 		
-		final int THREADS = IPAddresses.length;	
+		//final int THREADS = IPAddresses.length;
+		final int THREADS  = 2;
 				
 		for (int i = 0; i < THREADS; i++)
 		{
 			slaveThreads.add(new SlaveServerThread(IPAddresses[i], portNumbers[i], i, new RedistributingObject(), this));
 		}
+		
 		for (Thread t : slaveThreads)
 		{
 			t.start();
@@ -93,10 +95,7 @@ public class SlaveThreadedServer extends Thread
 				    		workingSlaves.add(idleSlave); 
 				    	}				    	        
 				    	            	 
-//	            	 synchronized(workingSlaves)
-//	            	 {
-//	            		 workingSlaves.add(idleSlave);	            	 
-//	            	 }
+
             	 }
 			    else
 			    {
@@ -130,24 +129,44 @@ public class SlaveThreadedServer extends Thread
 	{  
 		System.out.println("SlaveThreadedServer: Slave " + id + " is done!");
 		
+		boolean idFound = false;
+		
 		for (SlaveServerThread t: slaveThreads)
 		{
-			if (t.getId() == id)
+			if (t.getID() == id)
 			{
+				idFound = true;
+				System.out.println("SlaveThreadedServer: id " + id + " found");
+				
 				synchronized(workingSlaves)
 				{
 					workingSlaves.remove(t);
 				}
+				
+				
+				System.out.println("SlaveThreadedServer: removed slave " + id + " from workingSlaves");
 				synchronized(idleSlaves)
 				{
 					idleSlaves.add(t);
 				}				
-				System.out.println("SlaveThreadedServer: moved slave from working to idleSlaves!");
+				System.out.println("SlaveThreadedServer: moved slave " + id+ "  to idleSlaves!");
 //				workingToIdle(t); //move slave from working to idle
 			}
+			
+			else
+			{
+				System.out.println("SlaveThreadedServer: thread with id " + t.getID() + " does not match param id " + id);
+			}
+			
 				
-		}			
+		}	
+		
+		if(!idFound)
+		{
+			System.out.println("SlaveThreadedServer: id " + id + " not found.");
+		}
 	}
+	
 	
 	public LinkedList<SlaveServerThread> getIdleSlaves() 
 	{

@@ -15,7 +15,7 @@ public class Slave {
 	public static void main(String[] args)
 	{
 		if (args.length != 1) {
-			System.err.println("Usage: java EchoServer <port number>");
+			System.err.println("Usage: java Slave <port number>");
 			System.exit(1);
 		}	
 

@@ -43,21 +43,21 @@ public class SlaveServerThread extends Thread{
 					myThreadedServerBoss.slaveDoneMessage(id);
 					System.out.println("SlaveServerThread " + id + ": notified threadedServer that slave is done!");
 				}
-				else if(msg.substring(0,3).equals("rem"))
+				else if(msg.substring(0,3).equals("rem")) //remove
 				{
 					synchronized(redistributingObject)
 					{
 						redistributingObject.setDurationOfRemovedTask(Integer.parseInt(msg.substring(3)));
 					}					
 				}
-				else if(msg.substring(0,3).equals("cou"))
+				else if(msg.substring(0,3).equals("cou")) //count
 				{
 					synchronized(redistributingObject)
 					{
 						redistributingObject.setNumTasksLeft(Integer.parseInt(msg.substring(3)));
 					}					
 				}
-				else if(msg.substring(0,3).equals("dur"))
+				else if(msg.substring(0,3).equals("dur"))//duration
 				{
 					synchronized(redistributingObject)
 					{
@@ -78,6 +78,9 @@ public class SlaveServerThread extends Thread{
 		}
 	}	
 	
+	
+	
+	
 	public int getID()
 	{
 		return id;
@@ -97,7 +100,7 @@ public class SlaveServerThread extends Thread{
 		
 	}
 
-	//removes the job but returns its duration
+	//removes the job
 	public void removeJob()
 	{
 		outputStream.println("Remove");
