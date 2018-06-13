@@ -95,7 +95,7 @@ public class SlaveServerThread extends Thread{
 	
 	public void addJobWithDuration(int duration)
 	{
-		outputStream.println("JobSet" + duration);
+		outputStream.println("SetJob" + duration);
 		System.out.println("Slave Thread " + id + " added job with duration");
 		
 	}

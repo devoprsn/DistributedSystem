@@ -29,7 +29,7 @@ public class RedistributingObject {
 	}
 
 	public int getDurationOfRemovedTask() {
-		return (durationOfRemovedTask / 1000);
+		return durationOfRemovedTask;
 	}
 
 	public void setDurationOfRemovedTask(int durationOfRemovedTask) {

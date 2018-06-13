@@ -28,7 +28,7 @@ public class SlaveThreadedServer extends Thread
 		System.out.println("SlaveThreadedServer initialized"); //println for testing
 		
 		//final int THREADS = IPAddresses.length;
-		final int THREADS  = 2;
+		final int THREADS  = 2; //why?
 				
 		for (int i = 0; i < THREADS; i++)
 		{
@@ -141,8 +141,7 @@ public class SlaveThreadedServer extends Thread
 				synchronized(workingSlaves)
 				{
 					workingSlaves.remove(t);
-				}
-				
+				}				
 				
 				System.out.println("SlaveThreadedServer: removed slave " + id + " from workingSlaves");
 				synchronized(idleSlaves)
@@ -151,14 +150,7 @@ public class SlaveThreadedServer extends Thread
 				}				
 				System.out.println("SlaveThreadedServer: moved slave " + id+ "  to idleSlaves!");
 //				workingToIdle(t); //move slave from working to idle
-			}
-			
-			else
-			{
-				System.out.println("SlaveThreadedServer: thread with id " + t.getID() + " does not match param id " + id);
-			}
-			
-				
+			}				
 		}	
 		
 		if(!idFound)
