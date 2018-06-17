@@ -87,9 +87,11 @@ public class RedistributingThread extends Thread{
 	    		    //waits until value is updated by the slaveSErverThread
 	    		    while(maxWorkSlave.getRedistributingObject().getTotalDuration() == -1) {}
 	    		    
-	    		    maxTotalDuration = maxWorkSlave.getRedistributingObject().getTotalDuration();
+	    		   
+	    		   maxTotalDuration = maxWorkSlave.getRedistributingObject().getTotalDuration();
+	    		   
 	    		    
-	    		    System.out.println("RedistributingThread: Max total duration for thread " + maxWorkSlave.getID()
+	    			   System.out.println("RedistributingThread: Max total duration for thread " + maxWorkSlave.getID()
 	    			+ " = " + maxTotalDuration + " seconds");
 	    		    
 	    		    //now reset totalDuration to -1, prior to next read, so no stale value is read
@@ -112,7 +114,7 @@ public class RedistributingThread extends Thread{
 				    		//
 				    		totalDuration = slave.getRedistributingObject().getTotalDuration();
 				    		System.out.println("RedistributingThread: Total duration left for thread " + slave.getID()
-			    			+ " = " + (totalDuration / 1000)  + " seconds");
+			    			+ " = " + totalDuration  + " seconds");
 				    		slave.getRedistributingObject().setTotalDuration(-1);
 				    		if(totalDuration > maxTotalDuration)
 				    		{
@@ -176,7 +178,7 @@ public class RedistributingThread extends Thread{
 			    	    	int duration = maxWorkSlave.getRedistributingObject().getDurationOfRemovedTask();
 			    	    	
 			    	    	System.out.println("RedistributingThread: Duration of removed task for thread " 
-			    	    	+ maxWorkSlave.getID() + " = " + duration + " seconds");
+			    	    	+ maxWorkSlave.getID() + " = " + (duration/1000) + " seconds");
 			    	    	maxWorkSlave.getRedistributingObject().setDurationOfRemovedTask(-1);
 			    	    	
 			    	    	idleSlave.addJobWithDuration(duration);  // add the job with the duration to the idle slave
@@ -195,12 +197,14 @@ public class RedistributingThread extends Thread{
 
 			    	    
 			    	    System.out.println("RedistributingThread: Redistributed the jobs");			    	    	    	    
-				    }//end if should redistribute or not
+				    }//end if should redistribute or not because not enough tasks left
 			    	else 
 			    	{
 			    		System.out.println("RedistributingThread: No need to redistribute");
 			    	}
-			    	
+	    		 
+	    		   
+	    		   
 		    	}//end if working slaves or not	
 	
 		    } //end if idle slaves or not

@@ -44,6 +44,7 @@ public class Slave {
 			//slave can receive different messages:
 			while ((msg = requestReader.readLine()) != null)
 			{			
+				
 				if(msg.equals("Job")) {   //new job sent
 					Job job = new Job();
 					System.out.println("Slave: jobRequest- " + msg);
@@ -53,6 +54,7 @@ public class Slave {
 	                	tasks.add(job);	
 	                }	
 				}				
+				
 				else if(msg.length() > 6 && msg.substring(0,6).equals("SetJob"))  //job with set duration has been sent
 				{
 					Job job = new Job(Integer.parseInt(msg.substring(6)));
@@ -62,11 +64,17 @@ public class Slave {
 		             {
 		                tasks.add(job);	
 		             }	
-				}				
+				}		
+				
 				else if(msg.equals("Duration"))	{  //return the duration
 					System.out.println("Slave: jobRequest- " + msg);
-					responseWriter.println("dur" + durationOfAll());					
-				}			
+					
+					synchronized(responseWriter)
+					{
+					responseWriter.println("dur" + durationOfAll());
+					}
+				}	
+				
 				else if (msg.equals("Count")) //return how many task there are:
 				{
 					System.out.println("Slave: jobRequest- " + msg);
@@ -78,7 +86,10 @@ public class Slave {
 						numTasks = tasks.size();
 					}
 					
+					synchronized(responseWriter)
+					{
 					responseWriter.println("cou"+numTasks);
+					}
 				}
 				
 				else if(msg.equals("Remove")) //remove last job from list of tasks and return the duration so can be redistributed
@@ -91,7 +102,10 @@ public class Slave {
 						duration = tasks.removeLast().getDuration();
 					}
 					
+					synchronized(responseWriter)
+					{
 					responseWriter.println("rem" + duration);
+					}
 				}
 			}
 	

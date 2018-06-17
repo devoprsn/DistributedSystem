@@ -39,13 +39,19 @@ public class SlaveTaskThread extends Thread{
 					//perform task					
 					int sleepTime = currTask.getDuration();
 					System.out.println("SlaveTaskThread going to sleep for " + (sleepTime/1000) + " seconds");
+					
 					sleep(sleepTime);
+					
 					synchronized(tasks)
 					{
 						if(tasks.isEmpty()) 
 						{
-							 System.out.println("SlaveTaskThread: Done!");	                   
+							 System.out.println("SlaveTaskThread: Done!");
+							 
+							 synchronized(responseWriter)
+							 {
 					         responseWriter.println("Done");	
+							 }
 						}
 					}
 				} 

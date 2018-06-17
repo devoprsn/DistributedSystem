@@ -7,10 +7,10 @@ public class Master
    {
 	   LinkedList<String> jobs = new LinkedList<String>();
 	   
-	   //String[] iPAddresses = {"127.0.0.1", "127.0.0.1","127.0.0.1","127.0.0.1"};
-	   //int [] portNumbers = {40121,40123,40124,40125};
-             String[] iPAddresses = {"127.0.0.1", "127.0.0.1"};
-             int [] portNumbers = {40121,40123};
+	   String[] iPAddresses = {"127.0.0.1", "127.0.0.1","127.0.0.1","127.0.0.1"};
+	   int [] portNumbers = {40121,40122,40123,40124};
+             //String[] iPAddresses = {"127.0.0.1", "127.0.0.1"};
+             //int [] portNumbers = {40121,40123};
 	   
 	   System.out.println("Master is running!");
 	   

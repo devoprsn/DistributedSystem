@@ -27,8 +27,8 @@ public class SlaveThreadedServer extends Thread
 	{
 		System.out.println("SlaveThreadedServer initialized"); //println for testing
 		
-		//final int THREADS = IPAddresses.length;
-		final int THREADS  = 2; //why?
+		final int THREADS = IPAddresses.length;
+		
 				
 		for (int i = 0; i < THREADS; i++)
 		{
