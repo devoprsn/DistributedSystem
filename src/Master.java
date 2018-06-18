@@ -7,8 +7,26 @@ public class Master
    {
 	   LinkedList<String> jobs = new LinkedList<String>();
 	   
-	   String[] iPAddresses = {"127.0.0.1", "127.0.0.1","127.0.0.1","127.0.0.1"};
-	   int [] portNumbers = {40121,40122,40123,40124};
+	   String[] iPAddresses = {"127.0.0.1", "127.0.0.1","127.0.0.1","127.0.0.1"};   
+	   if(args.length != iPAddresses.length)
+	   {
+		   System.out.println("Must provide " + iPAddresses.length + " port numbers");
+		   System.exit(1);
+	   }
+
+	   int [] portNumbers = new int[args.length];
+	   try {
+		   for(int i = 0; i < args.length; i++)
+		   {
+			   portNumbers[i] = Integer.parseInt(args[i]);
+		   }
+	   }
+	   catch(NumberFormatException n)
+	   {
+		   System.out.println("Invalid port number");
+		   System.exit(1);
+	   }
+	   
              
 	   System.out.println("Master is running!");
 	   
