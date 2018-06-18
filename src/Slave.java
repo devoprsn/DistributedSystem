@@ -69,10 +69,7 @@ public class Slave {
 				else if(msg.equals("Duration"))	{  //return the duration
 					System.out.println("Slave: jobRequest- " + msg);
 					
-					synchronized(responseWriter)
-					{
-					responseWriter.println("dur" + durationOfAll());
-					}
+					responseWriter.println("dur" + durationOfAll());				
 				}	
 				
 				else if (msg.equals("Count")) //return how many task there are:
@@ -85,27 +82,21 @@ public class Slave {
 					{
 						numTasks = tasks.size();
 					}
-					
-					synchronized(responseWriter)
-					{
+
 					responseWriter.println("cou"+numTasks);
-					}
 				}
 				
 				else if(msg.equals("Remove")) //remove last job from list of tasks and return the duration so can be redistributed
 				{
 					System.out.println("Slave: jobRequest- " + msg);
 					
-					int duration = 0;
+					int duration;
 					synchronized(tasks)
 					{
 						duration = tasks.removeLast().getDuration();
 					}
 					
-					synchronized(responseWriter)
-					{
 					responseWriter.println("rem" + duration);
-					}
 				}
 			}
 	

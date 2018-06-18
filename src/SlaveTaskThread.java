@@ -47,11 +47,8 @@ public class SlaveTaskThread extends Thread{
 						if(tasks.isEmpty()) 
 						{
 							 System.out.println("SlaveTaskThread: Done!");
-							 
-							 synchronized(responseWriter)
-							 {
-					         responseWriter.println("Done");	
-							 }
+
+							 responseWriter.println("Done");	
 						}
 					}
 				} 
