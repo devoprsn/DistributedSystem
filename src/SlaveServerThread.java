@@ -10,7 +10,7 @@ public class SlaveServerThread extends Thread{
 	private RedistributingObject redistributingObject;
 	private SlaveThreadedServer myThreadedServerBoss;
 	private PrintWriter outputStream;
-	BufferedReader requestReader;
+	
 	
 	public SlaveServerThread(String IPAddress, int portNumber, int id, RedistributingObject redistributingObject, SlaveThreadedServer parent)
 	{
@@ -26,46 +26,47 @@ public class SlaveServerThread extends Thread{
 	public void run() 
 	{					
 		//set up connection
-		try(Socket slaveSocket = new Socket(IPAddress, portNumber);
-			//PrintWriter outputStream = new  PrintWriter(slaveSocket.getOutputStream(), true);
-			//BufferedReader requestReader = new BufferedReader(new InputStreamReader(slaveSocket.getInputStream()));
+		try    (
+				Socket slaveSocket = new Socket(IPAddress, portNumber);
+			    BufferedReader requestReader = new BufferedReader(new InputStreamReader(slaveSocket.getInputStream()));
 				)				
-		{	
-			outputStream = new  PrintWriter(slaveSocket.getOutputStream(), true);
-			requestReader = new BufferedReader(new InputStreamReader(slaveSocket.getInputStream()));
-			System.out.println("SlaveServerThread initialized"); //println for testing
+			{	
 			
-			String msg;
-			while((msg = requestReader.readLine()) != null)
-			{
-				if(msg.equals("Done"))
-				{
-					myThreadedServerBoss.slaveDoneMessage(id);
-					System.out.println("SlaveServerThread " + id + ": notified threadedServer that slave is done!");
-				}
-				else if(msg.substring(0,3).equals("rem")) //remove
-				{
-					synchronized(redistributingObject)
-					{
-						redistributingObject.setDurationOfRemovedTask(Integer.parseInt(msg.substring(3)));
-					}					
-				}
-				else if(msg.substring(0,3).equals("cou")) //count
-				{
-					synchronized(redistributingObject)
-					{
-						redistributingObject.setNumTasksLeft(Integer.parseInt(msg.substring(3)));
-					}					
-				}
-				else if(msg.substring(0,3).equals("dur"))//duration
-				{
-					synchronized(redistributingObject)
-					{
-						redistributingObject.setTotalDuration(Integer.parseInt(msg.substring(3)));
-					}					
-				}
-				
-			}
+						outputStream = new  PrintWriter(slaveSocket.getOutputStream(), true);
+						
+						System.out.println("SlaveServerThread initialized"); //println for testing
+						
+						String msg;
+						while((msg = requestReader.readLine()) != null)
+						{
+							if(msg.equals("Done"))
+							{
+								myThreadedServerBoss.slaveDoneMessage(id);
+								System.out.println("SlaveServerThread " + id + ": notified threadedServer that slave is done!");
+							}
+							else if(msg.substring(0,3).equals("rem")) //remove
+							{
+								synchronized(redistributingObject)
+								{
+									redistributingObject.setDurationOfRemovedTask(Integer.parseInt(msg.substring(3)));
+								}					
+							}
+							else if(msg.substring(0,3).equals("cou")) //count
+							{
+								synchronized(redistributingObject)
+								{
+									redistributingObject.setNumTasksLeft(Integer.parseInt(msg.substring(3)));
+								}					
+							}
+							else if(msg.substring(0,3).equals("dur"))//duration
+							{
+								synchronized(redistributingObject)
+								{
+									redistributingObject.setTotalDuration(Integer.parseInt(msg.substring(3)));
+								}					
+							}
+							
+						}
 		}
 		catch(UnknownHostException e)
 		{
@@ -111,7 +112,7 @@ public class SlaveServerThread extends Thread{
 	
 	public void getCountOfTasks()
 	{
-		outputStream.println("Count");     //request slave to send the duration of all its tasks
+		outputStream.println("Count");     //request slave to send the count of all its tasks
 		System.out.println("SlaveServerThread " + id + ": sent count command to Slave");
 		
 	}	
@@ -122,11 +123,7 @@ public class SlaveServerThread extends Thread{
 		System.out.println("SlaveServerThread " + id + ": sent duration command to Slave");
 	}
 	
-	//method added so redistributing thread can use a slaveserverthread to communicate with threadedserver to move around the slaves
-	public SlaveThreadedServer getMyThreadedServerBoss()
-	{
-		return myThreadedServerBoss;
-	}
+	
 	
 	public RedistributingObject getRedistributingObject()
 	{

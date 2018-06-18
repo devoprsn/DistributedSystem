@@ -7,13 +7,11 @@ public class RedistributingThread extends Thread{
 	
 	private LinkedList<SlaveServerThread> idleSlaves;
 	private LinkedList<SlaveServerThread> workingSlaves;
-//	private RedistributingObject redistributingObject;
-	
+
 	public RedistributingThread(LinkedList<SlaveServerThread> idleSlaves, LinkedList<SlaveServerThread> workingSlaves)
 	{
 		this.idleSlaves = idleSlaves;
 		this.workingSlaves = workingSlaves;
-//		this.redistributingObject = redistributingObject;
 	}
 	
 	
@@ -23,14 +21,15 @@ public class RedistributingThread extends Thread{
 		//sleeps for some time and then goes through the algorithm and redistributes the jobs if needed.
     	//keeps repeating this...
     	
-    	/* Algorithm: if there is an idle slave: it finds the working slave with the most jobs and 
-    	 * if the maxJobsSlave has at least a certain # of jobs it gives 1/2 of those jobs to the 1st (or only) idle slave.
+    	/* Algorithm: if there is an idle slave: it looks for a working slave: if it finds at least 1 idle and 1 working slave: it looks for the working slave
+    	 *  with the longest total duration left and if the maxJobsSlave has at least a certain # of jobs remaining, 
+    	 *   it gives 1/2 of those jobs to the 1st (or only) idle slave.
     	 */
     	
     	System.out.println("Redistributing Thread initialized");
          
     	SlaveServerThread maxWorkSlave;   //slave with the most time left to complete its tasks
-    	int totalDuration, maxTotalDuration;  //time left for each slave to complete all their tasks
+    	int totalDuration, maxTotalDuration;  //time left for each slave to complete all their tasks and longest duration
     	int numTasksLeft;              //number of tasks the slave with the longest total duration has left
     	int jobsToRedistribute;        //number of tasks to redistribute
     	SlaveServerThread idleSlave = null;   //slave that jobs will be redistributed to
@@ -84,7 +83,7 @@ public class RedistributingThread extends Thread{
 	    		    //request slaveSlaveServerThread to ask slave for totalDuration of all tasks, then slaveServerThread sets the value in the redistributingObject
 	    		    maxWorkSlave.getTotalDurationOfAllTasks();  
 	    		    
-	    		    //waits until value is updated by the slaveSErverThread
+	    		    //waits until value is updated by the slaveServerThread
 	    		    while(maxWorkSlave.getRedistributingObject().getTotalDuration() == -1) {}
 	    		    
 	    		   
@@ -129,7 +128,7 @@ public class RedistributingThread extends Thread{
 			    	
     		    	System.out.println("MaxWorkSlave is Slave " + maxWorkSlave.getID());
     		    	
-    		    	//got our slave with longest time until finished all tasks, now count how many tasks he has left
+    		    	//got our slave with longest time until finished all tasks, if duration isn't zero, now count how many tasks he has left
     		    	
     		    	if(maxTotalDuration > 0)
     		    	{
@@ -200,11 +199,13 @@ public class RedistributingThread extends Thread{
 	
 				    	    
 				    	    System.out.println("RedistributingThread: Redistributed the jobs");	
+				    	    
 				    	}//end if should redistribute or not because not enough tasks left
 				    	else 
 				    	{
 				    		System.out.println("RedistributingThread: No need to redistribute");
 				    	}
+				    	
 				    }//end if should redistribute or not because of maxDuration
 			    	else 
 			    	{

@@ -29,7 +29,7 @@ public class Slave {
 		        System.out.println(e.getMessage());
 		}
 
-		System.out.println("Slave initialized"); //println for testing	
+		System.out.println("Slave initialized"); 
 		tasks = new LinkedList<Job>();	
 		
 		try (Socket clientSocket = serverSocket.accept();

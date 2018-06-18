@@ -9,7 +9,7 @@ public class SlaveThreadedServer extends Thread
 	private LinkedList<SlaveServerThread> idleSlaves; 
 	private LinkedList<SlaveServerThread> workingSlaves;
 	private ArrayList<SlaveServerThread> slaveThreads;
-//	private RedistributingObject redistributingObject;
+
 	
    public SlaveThreadedServer(LinkedList<String> jobs, String[] IPAddresses, int[] portNumbers)
    {
@@ -19,13 +19,13 @@ public class SlaveThreadedServer extends Thread
 	  idleSlaves = new LinkedList<SlaveServerThread>();
 	  workingSlaves = new LinkedList<SlaveServerThread>();  
 	  slaveThreads = new ArrayList<SlaveServerThread>();	
-//	  this.redistributingObject = new RedistributingObject();
+
    }   
 
 	@Override
 	public void run()
 	{
-		System.out.println("SlaveThreadedServer initialized"); //println for testing
+		System.out.println("SlaveThreadedServer initialized"); 
 		
 		final int THREADS = IPAddresses.length;
 		
@@ -123,8 +123,8 @@ public class SlaveThreadedServer extends Thread
 	}
 	
 
-	//method for the slave/slaveserverthread to tell the threadedserver when it's done. 
-	// How will the slave/slaveserverthread call this method?
+	//method for the slaveserverthread to tell the threadedserver when it's done. 
+	
 	public void slaveDoneMessage(int id)
 	{  
 		System.out.println("SlaveThreadedServer: Slave " + id + " is done!");
@@ -149,7 +149,7 @@ public class SlaveThreadedServer extends Thread
 					idleSlaves.add(t);
 				}				
 				System.out.println("SlaveThreadedServer: moved slave " + id+ "  to idleSlaves!");
-//				workingToIdle(t); //move slave from working to idle
+
 			}				
 		}	
 		
@@ -171,20 +171,7 @@ public class SlaveThreadedServer extends Thread
 	}
 	
 	
-	//this method moves a slave to working slaves
-//	synchronized public void idleToWorking(SlaveServerThread idleSlave)
-//	{	
-//		workingSlaves.add(idleSlave);
-//		System.out.println("SlaveThreadedServer: moved slave to workingSlaves!");
-//	}
-	
-//	synchronized private void workingToIdle(SlaveServerThread doneSlave)
-//	{
-//		workingSlaves.remove(doneSlave);
-//		idleSlaves.add(doneSlave);
-//		
-//		System.out.println("SlaveThreadedServer: moved slave from working to idleSlaves!");
-//	}
+
     
 }
 

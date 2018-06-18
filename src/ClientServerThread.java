@@ -29,7 +29,7 @@ public class ClientServerThread extends Thread {
 		  
 		{
 
-			System.out.println("ClientServerThread " +id+ " run() has begun and accepted client socket!"); //println for testing
+			System.out.println("ClientServerThread " +id+ " run() has begun and accepted client socket!"); 
 
 			
 			String requestString;
